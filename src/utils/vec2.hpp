@@ -3,6 +3,9 @@
 
 #include "utils/math.hpp"
 
+namespace Sumo
+{
+
 template<Numeric T> struct vec2
 {
   T x, y;
@@ -72,4 +75,6 @@ using vec2f = vec2<float>;
 using vec2i = vec2<int>;
 using vec2u = vec2<unsigned>;
 
-#endif// VEC2_HPP
+} //namespace Sumo
+
+#endif// SUMO_VEC2_HPP

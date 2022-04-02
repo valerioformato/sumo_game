@@ -27,5 +27,7 @@ template<Numeric T> [[nodiscard]] constexpr auto wrap_increment(T const x, T con
 {
   return x + static_cast<T>(1) >= b ? a : x + static_cast<T>(1);
 }
+
 }// namespace Sumo
-#endif
+
+#endif // SUMO_MATH_HPP
