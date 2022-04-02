@@ -1,0 +1,4 @@
+// File to suppress cppcheck warnings for files that will not be fixed.
+
+// This gives so many false positives whenever a private class member is used inside a lambda or as an argument to std::thread or std::jthread
+unusedPrivateFunction
