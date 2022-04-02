@@ -4,8 +4,12 @@
 // c++ headers
 #include <thread>
 
+// dependencies headers
 #include <ftxui/component/screen_interactive.hpp>// for ScreenInteractive
 
+// project headers
+#include "ecs/components.hpp"
+#include "ecs/entity_manager.hpp"
 #include "engine/renderer.hpp"
 #include "engine/scene.hpp"
 
@@ -22,6 +26,8 @@ public:
   GameEngine(const GameEngine &) = delete;
 
 private:
+  std::shared_ptr<EntityManager> m_entityManager{};
+
   std::shared_ptr<GameScene> m_scene;
 
   Renderer m_renderer{ BUFFER_WIDTH, BUFFER_HEIGHT };
