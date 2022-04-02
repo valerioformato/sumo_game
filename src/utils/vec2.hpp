@@ -3,15 +3,14 @@
 
 #include "utils/math.hpp"
 
-namespace Sumo
-{
+namespace Sumo {
 
 template<Numeric T> struct vec2
 {
   T x, y;
 
   vec2() = default;
-  constexpr vec2(T x, T y) : x{ x }, y{ y } {}
+  constexpr vec2(T X, T Y) : x{ X }, y{ Y } {}
   explicit constexpr vec2(T k) : x{ k }, y{ k } {}
 
   [[nodiscard]] bool constexpr operator==(vec2<T> const &rhs) const = default;
@@ -21,6 +20,13 @@ template<Numeric T> struct vec2
     x += rhs.x, y += rhs.y;
     return *this;
   }
+
+  vec2 constexpr &operator-=(vec2<T> const &rhs)
+  {
+    x -= rhs.x, y -= rhs.y;
+    return *this;
+  }
+
   vec2 constexpr &operator*=(T const k)
   {
     x += k, y *= k;
@@ -75,6 +81,6 @@ using vec2f = vec2<float>;
 using vec2i = vec2<int>;
 using vec2u = vec2<unsigned>;
 
-} //namespace Sumo
+}// namespace Sumo
 
 #endif// SUMO_VEC2_HPP
