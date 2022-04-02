@@ -13,8 +13,6 @@ LGTM Has to be set up manually after template is created:
 
 
 ## More Details
-
- * [Dependency Setup](README_dependencies.md)
- * [Building Details](README_building.md)
- * [Troubleshooting](README_troubleshooting.md)
- * [Docker](README_docker.md)
+### Disabled warnings
+- *cppcheck*
+    - `unusedPrivateFunction`: This check triggers false positives too often, especially when a private class member is used in a lambda function and/or as an argument for `std::thread` or `std::jthread`.

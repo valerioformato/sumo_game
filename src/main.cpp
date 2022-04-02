@@ -1,18 +1,24 @@
+// c++ headers
 #include <array>
 #include <functional>
 #include <iostream>
 #include <random>
 
+// dependencies headers
 #include <docopt/docopt.h>
 #include <ftxui/component/captured_mouse.hpp>// for ftxui
 #include <ftxui/component/component.hpp>// for Slider
 #include <ftxui/component/screen_interactive.hpp>// for ScreenInteractive
 #include <spdlog/spdlog.h>
 
+// project headers
+
 // This file will be generated automatically when you run the CMake
 // configuration step. It creates a namespace called `sumo_game`. You can modify
 // the source template at `configured_files/config.hpp.in`.
 #include <internal_use_only/config.hpp>
+
+#include "engine/engine.hpp"
 
 struct Color
 {
@@ -69,7 +75,6 @@ void game_iteration_canvas()
   // this should probably have a `bitmap` helper function that does what you expect
   // similar to the other parts of FTXUI
   auto bm = std::make_shared<Bitmap>(50, 50);// NOLINT magic numbers
-  auto small_bm = std::make_shared<Bitmap>(6, 6);// NOLINT magic numbers
 
   double fps = 0;
 
@@ -94,23 +99,6 @@ void game_iteration_canvas()
       for (std::size_t col = 0; col < max_col; ++col) { ++(bm->at(col, row).G); }
     }
 
-    // for the fun of it, let's have a second window doing interesting things
-    auto &small_bm_pixel =
-      small_bm->data().at(static_cast<std::size_t>(elapsed_time.count()) % small_bm->data().size());
-
-    switch (elapsed_time.count() % 3) {
-    case 0:
-      small_bm_pixel.R += 11;// NOLINT Magic Number
-      break;
-    case 1:
-      small_bm_pixel.G += 11;// NOLINT Magic Number
-      break;
-    case 2:
-      small_bm_pixel.B += 11;// NOLINT Magic Number
-      break;
-    }
-
-
     ++max_row;
     if (max_row >= bm->height()) { max_row = 0; }
     ++max_col;
@@ -134,9 +122,7 @@ void game_iteration_canvas()
 
     // now actually draw the game elements
     return ftxui::hbox({ bm | ftxui::border,
-      ftxui::vbox({ ftxui::text("Frame: " + std::to_string(counter)),
-        ftxui::text("FPS: " + std::to_string(fps)),
-        small_bm | ftxui::border }) });
+      ftxui::vbox({ ftxui::text("Frame: " + std::to_string(counter)), ftxui::text("FPS: " + std::to_string(fps)) }) });
   };
 
   auto renderer = ftxui::Renderer(make_layout);
@@ -183,7 +169,8 @@ int main(int argc, const char **argv)
         sumo_game::cmake::project_version));// version string, acquired
                                             // from config.hpp via CMake
 
-    game_iteration_canvas();
+    // game_iteration_canvas();
+    Sumo::GameEngine engine;
 
     //    consequence_game();
   } catch (const std::exception &e) {
