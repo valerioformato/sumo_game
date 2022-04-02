@@ -2,8 +2,12 @@ find_package(fmt CONFIG)
 find_package(spdlog CONFIG)
 find_package(docopt CONFIG)
 
+set(GAME_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
+
+add_subdirectory(engine)
+
 # Generic test that uses conan libs
-add_executable(intro main.cpp)
+add_executable(intro ${GAME_SOURCES})
 target_link_libraries(
   intro
   PRIVATE project_options
