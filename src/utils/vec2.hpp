@@ -80,6 +80,7 @@ template<std::floating_point T> [[nodiscard]] vec2<T> constexpr normalize(vec2<T
 using vec2f = vec2<float>;
 using vec2i = vec2<int>;
 using vec2u = vec2<unsigned>;
+using vec2z = vec2<size_t>;
 
 }// namespace Sumo
 

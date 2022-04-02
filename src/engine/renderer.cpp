@@ -1,4 +1,6 @@
 #include "engine/renderer.hpp"
+#include "engine/engine.hpp"
+#include "utils/vec2.hpp"
 
 
 namespace Sumo {
@@ -10,6 +12,34 @@ ftxui::Element Renderer::DrawScene()
   // This code actually processes the draw event
 
   // TODO: draw all the entities in the current scene
+
+  // FIXME: as soon as we have an ECS move all the drawcode to a SpriteComponent or something equivalent
+
+  // draw the "sand"
+  [this] {
+    for (size_t ix = 0; ix < m_screenBuffer->width(); ++ix) {
+      for (size_t iy = 0; iy < m_screenBuffer->height(); ++iy) { m_screenBuffer->at(ix, iy) = GameScene::sandColor; }
+    }
+  }();
+
+  // draw the arena border
+  [this] {
+    static const auto radius = m_screenBuffer->height() / 2ul - 1;
+    static constexpr float radiusTolerance{ 1.01F };
+    for (size_t ix = 0; ix < m_screenBuffer->width(); ++ix) {
+      for (size_t iy = 0; iy < m_screenBuffer->height(); ++iy) {
+
+        // compute position w.r.t. center of screen buffer
+        vec2f pos{ static_cast<float>(ix), static_cast<float>(iy) };
+        pos -= vec2f{ 0.5F * static_cast<float>(m_screenBuffer->width()),// NOLINT magic numbers
+          0.5F * static_cast<float>(m_screenBuffer->height()) };// NOLINT magic numbers
+
+        if (std::fabs(length(pos) - static_cast<float>(radius)) < radiusTolerance) {
+          m_screenBuffer->at(ix, iy) = Color{ 255, 255, 255 };// NOLINT magic numbers
+        }
+      }
+    }
+  }();
 
   const auto drawEnd = std::chrono::steady_clock::now();
 

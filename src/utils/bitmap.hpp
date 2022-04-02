@@ -1,6 +1,7 @@
 #ifndef SUMO_BITMAP_HPP
 #define SUMO_BITMAP_HPP
 
+// dependencies headers
 #include <ftxui/component/component.hpp>// for Slider
 
 namespace Sumo {
@@ -18,6 +19,7 @@ struct Bitmap : ftxui::Node
     : width_(width), height_(height)
   {}
 
+  Color &at(std::size_t idx) { return pixels.at(idx); }
   Color &at(std::size_t x, std::size_t y) { return pixels.at(width_ * y + x); }
 
   void ComputeRequirement() override
