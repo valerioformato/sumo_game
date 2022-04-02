@@ -24,7 +24,7 @@ ftxui::Element Renderer::DrawScene()
 
   // draw the arena border
   [this] {
-    static const auto radius = m_screenBuffer->height() / 2ul - 1;
+    static const auto radius = m_screenBuffer->height() / 2UL - 1;
     static constexpr float radiusTolerance{ 1.01F };
     for (size_t ix = 0; ix < m_screenBuffer->width(); ++ix) {
       for (size_t iy = 0; iy < m_screenBuffer->height(); ++iy) {
