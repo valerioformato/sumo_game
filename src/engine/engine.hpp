@@ -13,6 +13,8 @@
 #include "engine/renderer.hpp"
 #include "engine/scene.hpp"
 
+#include "game/ring_scene.hpp"
+
 namespace Sumo {
 class GameEngine
 {
@@ -26,9 +28,9 @@ public:
   GameEngine(const GameEngine &) = delete;
 
 private:
-  std::shared_ptr<EntityManager> m_entityManager{};
+  EntityManager m_entityManager;
 
-  std::shared_ptr<GameScene> m_scene;
+  std::shared_ptr<GameScene> m_scene = std::make_shared<Game::RingScene>(m_entityManager);
 
   Renderer m_renderer{ BUFFER_WIDTH, BUFFER_HEIGHT };
 

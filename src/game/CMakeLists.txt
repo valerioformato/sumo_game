@@ -1,0 +1,3 @@
+set(GAME_SOURCES
+    ${GAME_SOURCES} ${CMAKE_CURRENT_SOURCE_DIR}/ring_scene.cpp
+    PARENT_SCOPE)
