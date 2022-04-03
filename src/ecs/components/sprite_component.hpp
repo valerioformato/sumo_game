@@ -19,6 +19,8 @@ public:
   void Draw(Bitmap &screenBuffer, vec2u position) const;
 
 private:
+  void DrawOnce(Bitmap &screenBuffer, vec2u position) const;
+
   Sprite m_sprite;
   bool m_tiled;
 };
