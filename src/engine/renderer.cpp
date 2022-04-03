@@ -12,27 +12,24 @@ ftxui::Element Renderer::DrawScene()
   // This code actually processes the draw event
 
   // TODO: draw all the entities in the current scene
+  const auto drawStart = std::chrono::steady_clock::now();
 
-  // FIXME: as soon as we have an ECS move all the drawcode to a SpriteComponent or something equivalent
-
-  // draw the "sand"
-  // [this] {
-  //   for (size_t ix = 0; ix < m_screenBuffer->width(); ++ix) {
-  //     for (size_t iy = 0; iy < m_screenBuffer->height(); ++iy) { m_screenBuffer->at(ix, iy) = GameScene::sandColor; }
-  //   }
-  // }();
-
-  using SpriteComponent = Ecs::Components::SpriteComponent;
+  using BackgroundSpriteComponent = Ecs::Components::BackgroundSpriteComponent;
   auto eM = currentScene->entityManager;
 
   // FIXME: this is temporary, should be generalized properly
+  const auto bgDrawStart = std::chrono::steady_clock::now();
   auto groundEntity = currentScene->entities[0];
-  if (eM->has_component<SpriteComponent>(groundEntity)) {
-    auto spriteComponent = eM->get_component<SpriteComponent>(groundEntity).value();
-    spriteComponent.Draw(*m_screenBuffer, { 0U, 0U });
+  if (eM->has_component<BackgroundSpriteComponent>(groundEntity)) {
+    const auto &spriteComponent = eM->get_component<BackgroundSpriteComponent>(groundEntity).value();
+
+    spriteComponent.Draw(*m_screenBuffer);
   }
+  const auto bgDrawEnd = std::chrono::steady_clock::now();
 
   // draw the arena border
+  // TODO: move also this to a sprite, but first requires implementing an alpha channel
+  const auto arenaDrawStart = std::chrono::steady_clock::now();
   [this] {
     static const auto radius = m_screenBuffer->height() / 2UL - 2;
     static constexpr float radiusTolerance{ 1.01F };
@@ -57,7 +54,13 @@ ftxui::Element Renderer::DrawScene()
   auto result = ftxui::hbox({ ftxui::vbox({ m_screenBuffer | ftxui::border, ftxui::text("") | ftxui::flex }),
     ftxui::vbox({ ftxui::text("Frame: " + std::to_string(m_frameCounter)),
       ftxui::text(fmt::format(
-        "Draw time: {}", std::chrono::duration_cast<std::chrono::milliseconds>(drawEnd - lastFrameTime))) }) });
+        "Total draw time: {}", std::chrono::duration_cast<std::chrono::milliseconds>(drawEnd - lastFrameTime))),
+      ftxui::text(fmt::format(
+        "Get scene time: {}", std::chrono::duration_cast<std::chrono::milliseconds>(bgDrawStart - drawStart))),
+      ftxui::text(fmt::format(
+        "Background draw time: {}", std::chrono::duration_cast<std::chrono::milliseconds>(bgDrawEnd - bgDrawStart))),
+      ftxui::text(fmt::format(
+        "Arena draw time: {}", std::chrono::duration_cast<std::chrono::milliseconds>(drawEnd - arenaDrawStart))) }) });
 
   ++m_frameCounter;
   lastFrameTime = drawEnd;

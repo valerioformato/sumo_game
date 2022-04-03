@@ -6,6 +6,6 @@ namespace Sumo::Game {
 RingScene::RingScene(std::shared_ptr<EntityManager> entManager) : GameScene(std::move(entManager))
 {
   auto &ground_entity = entities.emplace_back(entityManager->add("ground"));
-  entityManager->add_component(ground_entity, Ecs::Components::SpriteComponent(Sumo::Sprites::sand_tile, true));
+  entityManager->add_component(ground_entity, Ecs::Components::BackgroundSpriteComponent(Sumo::Sprites::sand_tile));
 }
 }// namespace Sumo::Game

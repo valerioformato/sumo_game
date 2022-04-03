@@ -18,7 +18,7 @@ void GameEngine::Tick()
 {
   while (!m_stopGameLoop) {
     using namespace std::chrono_literals;
-    std::this_thread::sleep_for(1.0s / 30.0);// NOLINT magic numbers
+    std::this_thread::sleep_for(1.0s / 60.0);// NOLINT magic numbers
     m_screen.PostEvent(ftxui::Event::Custom);
   }
 };
