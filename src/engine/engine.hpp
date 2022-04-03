@@ -28,7 +28,7 @@ public:
   GameEngine(const GameEngine &) = delete;
 
 private:
-  EntityManager m_entityManager;
+  std::shared_ptr<EntityManager> m_entityManager = std::make_unique<EntityManager>();
 
   std::shared_ptr<GameScene> m_scene = std::make_shared<Game::RingScene>(m_entityManager);
 

@@ -3,9 +3,9 @@
 #include "game/assets/sprites/sand_tile.hpp"
 
 namespace Sumo::Game {
-RingScene::RingScene(EntityManager &entityManager)
+RingScene::RingScene(std::shared_ptr<EntityManager> entManager) : GameScene(std::move(entManager))
 {
-  auto &ground_entity = entities.emplace_back(entityManager.add("ground"));
-  entityManager.add_component(ground_entity, Ecs::Components::SpriteComponent(Sumo::Sprites::sand_tile, true));
+  auto &ground_entity = entities.emplace_back(entityManager->add("ground"));
+  entityManager->add_component(ground_entity, Ecs::Components::SpriteComponent(Sumo::Sprites::sand_tile, true));
 }
 }// namespace Sumo::Game

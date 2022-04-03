@@ -6,16 +6,14 @@
 #include "utils/bitmap.hpp"
 
 namespace Sumo {
-class Sprite
+struct Sprite
 {
-public:
-  constexpr Sprite(unsigned int dimx, unsigned int dimy, std::span<const uint8_t> data)
-    : m_dimx{ dimx }, m_dimy{ dimy }, m_data{ data } {};
+  constexpr Sprite(unsigned int dimx, unsigned int dimy, std::span<const Color> rawdata)
+    : dimX{ dimx }, dimY{ dimy }, data{ rawdata } {};
 
-private:
-  unsigned int m_dimx;
-  unsigned int m_dimy;
-  std::span<const uint8_t> m_data;
+  unsigned int dimX;
+  unsigned int dimY;
+  std::span<const Color> data;
 };
 }// namespace Sumo
 

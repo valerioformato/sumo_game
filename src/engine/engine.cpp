@@ -2,7 +2,11 @@
 
 namespace Sumo {
 
-GameEngine::GameEngine() { m_screen.Loop(m_renderer.ftxRenderer); };
+GameEngine::GameEngine()
+{
+  m_renderer.currentScene = m_scene;
+  m_screen.Loop(m_renderer.ftxRenderer);
+};
 
 GameEngine::~GameEngine()
 {

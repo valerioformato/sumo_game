@@ -10,7 +10,7 @@ def convert_sprite(imagefile, sprite_name):
     data = ""
     for line in img:
         for pixel in line:
-            data += f"{pixel[0]}, {pixel[1]}, {pixel[2]}, "
+            data += f"Color {{ {pixel[0]}, {pixel[1]}, {pixel[2]} }}, "
 
     dimx, dimy = img.shape[0], img.shape[1]
 
@@ -22,7 +22,7 @@ def convert_sprite(imagefile, sprite_name):
         "#include \"engine/sprite.hpp\"\n\n"
         "namespace Sumo::Sprites{\n"
         "// clang-format off\n"
-        f"    constexpr std::array<uint8_t, {img.size}> {sprite_name}_data = {{ {data[:-2]} }};\n"
+        f"    constexpr std::array<Color, {dimx*dimy}> {sprite_name}_data = {{ {data[:-2]} }};\n"
         "// clang-format on\n"
         "\n"
         f"    constexpr Sprite {sprite_name}{{ {dimx}U, {dimy}U, {sprite_name}_data }};"

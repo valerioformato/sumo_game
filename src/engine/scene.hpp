@@ -4,15 +4,18 @@
 // project headers
 #include "utils/bitmap.hpp"
 
+#include "ecs/components.hpp"
 #include "ecs/entity.hpp"
 
 namespace Sumo {
 class GameScene
 {
 public:
-  static constexpr Color sandColor{ 143, 112, 27 };
+  GameScene() = default;
+  explicit GameScene(std::shared_ptr<EntityManager> entMgr) : entityManager{ entMgr } {}
 
   std::vector<Ecs::Entity> entities;
+  std::shared_ptr<EntityManager> entityManager;
 };
 }// namespace Sumo
 

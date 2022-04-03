@@ -7,6 +7,7 @@
 // project headers
 #include "engine/sprite.hpp"
 #include "utils/bitmap.hpp"
+#include "utils/vec2.hpp"
 
 namespace Sumo::Ecs::Components {
 class SpriteComponent
@@ -14,7 +15,8 @@ class SpriteComponent
 public:
   SpriteComponent(Sprite sprite, bool tiled) : m_sprite{ std::move(sprite) }, m_tiled{ tiled } {};
 
-  void Draw(Bitmap &screenBuffer);
+  // Draw the sprite placing the 0,0 corner at given position
+  void Draw(Bitmap &screenBuffer, vec2u position) const;
 
 private:
   Sprite m_sprite;

@@ -16,18 +16,28 @@ ftxui::Element Renderer::DrawScene()
   // FIXME: as soon as we have an ECS move all the drawcode to a SpriteComponent or something equivalent
 
   // draw the "sand"
-  [this] {
-    for (size_t ix = 0; ix < m_screenBuffer->width(); ++ix) {
-      for (size_t iy = 0; iy < m_screenBuffer->height(); ++iy) { m_screenBuffer->at(ix, iy) = GameScene::sandColor; }
-    }
-  }();
+  // [this] {
+  //   for (size_t ix = 0; ix < m_screenBuffer->width(); ++ix) {
+  //     for (size_t iy = 0; iy < m_screenBuffer->height(); ++iy) { m_screenBuffer->at(ix, iy) = GameScene::sandColor; }
+  //   }
+  // }();
+
+  using SpriteComponent = Ecs::Components::SpriteComponent;
+  auto eM = currentScene->entityManager;
+
+  // FIXME: this is temporary, should be generalized properly
+  auto groundEntity = currentScene->entities[0];
+  if (eM->has_component<SpriteComponent>(groundEntity)) {
+    auto spriteComponent = eM->get_component<SpriteComponent>(groundEntity).value();
+    spriteComponent.Draw(*m_screenBuffer, { 0U, 0U });
+  }
 
   // draw the arena border
   [this] {
     static const auto radius = m_screenBuffer->height() / 2UL - 2;
     static constexpr float radiusTolerance{ 1.01F };
-    for (size_t ix = 0; ix < m_screenBuffer->width(); ++ix) {
-      for (size_t iy = 0; iy < m_screenBuffer->height(); ++iy) {
+    for (size_t iy = 0; iy < m_screenBuffer->height(); ++iy) {
+      for (size_t ix = 0; ix < m_screenBuffer->width(); ++ix) {
 
         // compute position w.r.t. center of screen buffer
         vec2f pos{ static_cast<float>(ix), static_cast<float>(iy) };
