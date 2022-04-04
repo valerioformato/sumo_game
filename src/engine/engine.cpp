@@ -14,7 +14,7 @@ GameEngine::~GameEngine()
   m_gameThread.join();
 }
 
-void GameEngine::Tick()
+void GameEngine::GameLoop()
 {
   while (!m_stopGameLoop) {
     using namespace std::chrono_literals;

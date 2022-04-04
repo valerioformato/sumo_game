@@ -12,18 +12,16 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 include(FetchContent)
 
 set(FETCHCONTENT_UPDATES_DISCONNECTED TRUE)
-FetchContent_Declare(ftxui
+FetchContent_Declare(
+  ftxui
   GIT_REPOSITORY https://github.com/ArthurSonzogni/ftxui
-  GIT_TAG v2.0.0
-)
+  GIT_TAG master)
 
 FetchContent_GetProperties(ftxui)
 if(NOT ftxui_POPULATED)
   FetchContent_Populate(ftxui)
   add_subdirectory(${ftxui_SOURCE_DIR} ${ftxui_BINARY_DIR} EXCLUDE_FROM_ALL)
 endif()
-
-
 
 # Note: by default ENABLE_DEVELOPER_MODE is True
 # This means that all analysis (sanitizers, static analysis)
@@ -111,8 +109,8 @@ dynamic_project_options(
   # MSVC_WARNINGS    # Override the defaults for the MSVC warnings
   # CLANG_WARNINGS   # Override the defaults for the CLANG warnings
   # GCC_WARNINGS     # Override the defaults for the GCC warnings
-  CPPCHECK_OPTIONS "--suppressions-list=${CMAKE_SOURCE_DIR}/cppcheck.suppress"
-)
+  CPPCHECK_OPTIONS
+  "--suppressions-list=${CMAKE_SOURCE_DIR}/cppcheck.suppress")
 
 target_compile_features(project_options INTERFACE cxx_std_${CMAKE_CXX_STANDARD})
 

@@ -2,6 +2,8 @@
 #include "engine/engine.hpp"
 #include "utils/vec2.hpp"
 
+// TODO: remove later
+#include "ecs/components/sprite_component.hpp"
 
 namespace Sumo {
 
@@ -47,6 +49,12 @@ ftxui::Element Renderer::DrawScene()
       }
     }
   }();
+
+  // draw character sprites
+  const Game::PlayableCharacter &player1 = std::static_pointer_cast<Game::RingScene>(currentScene)->player1;
+  Ecs::Components::SpriteComponent pSprite{ player1.sprite, false };
+  vec2u pScreenPos{};
+  pSprite.Draw(m_screenBuffer, player1.position);
 
   const auto drawEnd = std::chrono::steady_clock::now();
 
