@@ -5,6 +5,9 @@
 #include "game/ring_scene.hpp"
 
 namespace Sumo::Game {
+
+constexpr std::array tempPlayerSprite{ Color{ 255, 255, 255 } };// NOLINT magic numbers
+
 RingScene::RingScene(std::shared_ptr<EntityManager> entManager) : GameScene(std::move(entManager))
 {
   auto &ground_entity = entities.emplace_back(entityManager->add("ground"));
@@ -12,14 +15,36 @@ RingScene::RingScene(std::shared_ptr<EntityManager> entManager) : GameScene(std:
 
   // test sprite: one white square :)
   // TODO: replace with real sprite
-  player1 = PlayableCharacter{ Sprite{ 1U, 1U, std::array{ Color{ 255, 255, 255 } } } };// NOLINT magic numbers
+  player1 = PlayableCharacter{ Sprite{ 1U, 1U, tempPlayerSprite } };
   player1Controller = PlayerController{ .eventHandler = ftxui::CatchEvent([this](const ftxui::Event &event) {
-    if (event == ftxui::Event::ArrowUp) { player1.velocity = { 0, 1 }; }
-    if (event == ftxui::Event::ArrowDown) { player1.velocity = { 0, -1 }; }
-    if (event == ftxui::Event::ArrowLeft) { player1.velocity = { -1, 0 }; }
-    if (event == ftxui::Event::ArrowRight) { player1.velocity = { 1, 0 }; }
+    bool handled = true;
+    vec2f velocity{ 0, 0 };
 
-    return true;
+    if (event == ftxui::Event::ArrowUp) {
+      velocity += { 0, -1 };
+    } else if (event == ftxui::Event::ArrowDown) {
+      velocity += { 0, 1 };
+    } else if (event == ftxui::Event::ArrowLeft) {
+      velocity += { -1, 0 };
+    } else if (event == ftxui::Event::ArrowRight) {
+      velocity += { 1, 0 };
+    } else {
+      handled = false;
+    }
+
+    player1.velocity = velocity;
+
+    return handled;
   }) };
+}
+
+void RingScene::Update(std::chrono::milliseconds dt)
+{
+  static constexpr float millisecondToSecond = 0.001F;
+  [[maybe_unused]] float tick = millisecondToSecond * static_cast<float>(dt.count());
+
+  lastTick = tick;
+
+  player1.position += tick * player1.velocity;
 }
 }// namespace Sumo::Game

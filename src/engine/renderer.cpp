@@ -53,8 +53,16 @@ ftxui::Element Renderer::DrawScene()
   // draw character sprites
   const Game::PlayableCharacter &player1 = std::static_pointer_cast<Game::RingScene>(currentScene)->player1;
   Ecs::Components::SpriteComponent pSprite{ player1.sprite, false };
-  vec2u pScreenPos{};
-  pSprite.Draw(m_screenBuffer, player1.position);
+  vec2u pScreenPos{ static_cast<unsigned int>(player1.position.x), static_cast<unsigned int>(player1.position.y) };
+  pSprite.Draw(*m_screenBuffer, pScreenPos);
+
+  const auto lastTick = std::static_pointer_cast<Game::RingScene>(currentScene)->lastTick;
+  auto playerDebugText = ftxui::text(fmt::format("{} ({}, {}) - ({}, {})",
+    lastTick,
+    player1.velocity.x,
+    player1.velocity.y,
+    player1.position.x,
+    player1.position.y));
 
   const auto drawEnd = std::chrono::steady_clock::now();
 
@@ -68,7 +76,8 @@ ftxui::Element Renderer::DrawScene()
       ftxui::text(fmt::format(
         "Background draw time: {}", std::chrono::duration_cast<std::chrono::milliseconds>(bgDrawEnd - bgDrawStart))),
       ftxui::text(fmt::format(
-        "Arena draw time: {}", std::chrono::duration_cast<std::chrono::milliseconds>(drawEnd - arenaDrawStart))) }) });
+        "Arena draw time: {}", std::chrono::duration_cast<std::chrono::milliseconds>(drawEnd - arenaDrawStart))),
+      playerDebugText }) });
 
   ++m_frameCounter;
   lastFrameTime = drawEnd;

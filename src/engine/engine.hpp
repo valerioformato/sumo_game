@@ -34,6 +34,7 @@ private:
 
   Renderer m_renderer{ BUFFER_WIDTH, BUFFER_HEIGHT };
 
+  ftxui::Component m_mainComponent{ m_renderer.ftxRenderer };
   ftxui::ScreenInteractive m_screen{ ftxui::ScreenInteractive::Fullscreen() };
 
   void GameLoop();
