@@ -1,14 +1,19 @@
 #ifndef SUMO_RINGSCENE_HPP
 #define SUMO_RINGSCENE_HPP
 
-#include "ecs/components.hpp"
 #include "engine/scene.hpp"
+#include "engine/sprite.hpp"
 
 namespace Sumo::Game {
 class RingScene : public GameScene
 {
 public:
-  explicit RingScene(std::shared_ptr<EntityManager> entManager);
+  explicit RingScene(GameEngine* engine);
+
+  void update() override;
+
+private:
+  Sprite m_groundSprite; 
 };
 }// namespace Sumo::Game
 

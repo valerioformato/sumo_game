@@ -4,14 +4,23 @@ namespace Sumo {
 
 GameEngine::GameEngine()
 {
-  m_renderer.currentScene = m_scene;
-  m_screen.Loop(m_renderer.ftxRenderer);
 };
 
 GameEngine::~GameEngine()
 {
   m_stopGameLoop = true;
   m_gameThread.join();
+}
+
+void GameEngine::run()
+{
+  m_screen.Loop(ftxui::Renderer([&] {
+    m_renderer.begin();
+
+    m_scene->update(); 
+
+    return m_renderer.end(); 
+  })); 
 }
 
 void GameEngine::Tick()

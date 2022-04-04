@@ -8,8 +8,6 @@
 #include <ftxui/component/screen_interactive.hpp>// for ScreenInteractive
 
 // project headers
-#include "ecs/components.hpp"
-#include "ecs/entity_manager.hpp"
 #include "engine/renderer.hpp"
 #include "engine/scene.hpp"
 
@@ -25,12 +23,17 @@ public:
   GameEngine();
   ~GameEngine();
 
+  void run(); 
+
+  void rendererSubmit(const Sprite& sprite)
+  {
+    m_renderer.submit(sprite); 
+  }
+
   GameEngine(const GameEngine &) = delete;
 
 private:
-  std::shared_ptr<EntityManager> m_entityManager = std::make_unique<EntityManager>();
-
-  std::shared_ptr<GameScene> m_scene = std::make_shared<Game::RingScene>(m_entityManager);
+  std::unique_ptr<GameScene> m_scene = std::make_unique<Game::RingScene>(this);
 
   Renderer m_renderer{ BUFFER_WIDTH, BUFFER_HEIGHT };
 

@@ -2,29 +2,35 @@
 #define SUMO_RENDERER_HPP
 
 // dependencies headers
-#include <fmt/chrono.h>
 #include <ftxui/component/component.hpp>// for ScreenInteractive
 
 // project headers
 #include "engine/scene.hpp"
 #include "utils/bitmap.hpp"
+#include "utils/vec2.hpp"
+#include "engine/sprite.hpp"
 
 namespace Sumo {
+
 class Renderer
 {
-public:
-  Renderer(unsigned int dimx, unsigned int dimy) : m_screenBuffer{ std::make_shared<Bitmap>(dimx, dimy) } {};
+public: 
+  Renderer(std::size_t width, std::size_t height) : 
+    m_frameBuffer(std::make_shared<Bitmap>(width, height))
+  {
 
-  std::shared_ptr<GameScene> currentScene;
-  ftxui::Component ftxRenderer{ ftxui::Renderer([this] { return this->DrawScene(); }) };
+  }; 
 
-private:
-  std::shared_ptr<Bitmap> m_screenBuffer;
+  void begin(const Color& clearColor = Color{}); 
 
-  unsigned long long m_frameCounter{ 0 };
+  void submit(const Sprite& sprite); 
 
-  ftxui::Element DrawScene();
-};
+  ftxui::Element end(); 
+
+private: 
+  std::shared_ptr<Bitmap> m_frameBuffer; 
+}; 
+
 }// namespace Sumo
 
 #endif

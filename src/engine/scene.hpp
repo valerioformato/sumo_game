@@ -4,18 +4,21 @@
 // project headers
 #include "utils/bitmap.hpp"
 
-#include "ecs/components.hpp"
-#include "ecs/entity.hpp"
+#include "engine/engine.hpp"
 
 namespace Sumo {
 class GameScene
 {
 public:
-  GameScene() = default;
-  explicit GameScene(std::shared_ptr<EntityManager> entMgr) : entityManager{ entMgr } {}
+  explicit GameScene(GameEngine *engine) : m_engine{engine}
+  {
+    
+  }
 
-  std::vector<Ecs::Entity> entities;
-  std::shared_ptr<EntityManager> entityManager;
+  virtual void update() = 0; 
+
+protected:
+	GameEngine* m_engine; 
 };
 }// namespace Sumo
 
