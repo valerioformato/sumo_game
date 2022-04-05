@@ -38,9 +38,11 @@ private:
   ftxui::ScreenInteractive m_screen{ ftxui::ScreenInteractive::Fullscreen() };
 
   void GameLoop();
+  void DrawLoop();
 
   std::atomic<bool> m_stopGameLoop;
   std::thread m_gameThread{ &GameEngine::GameLoop, this };
+  std::thread m_drawThread{ &GameEngine::DrawLoop, this };
 };
 }// namespace Sumo
 

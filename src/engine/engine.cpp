@@ -19,9 +19,28 @@ GameEngine::~GameEngine()
   m_gameThread.join();
 }
 
+void GameEngine::DrawLoop()
+{
+  using namespace std::chrono_literals;
+  static constexpr std::chrono::milliseconds targetFrameTime = 1.0s / 60.0;
+
+  while (!m_stopGameLoop) {
+    static auto lastDraw = std::chrono::steady_clock::now();
+
+    m_renderer.DrawScene();
+
+    auto drawTime = std::chrono::steady_clock::now();
+    auto dt = std::chrono::duration_cast<std::chrono::milliseconds>(updateTime - lastTick);
+
+    if(dt < targetFrameTime)
+      std::this_thread::sleep_for(targetFrameTime - dt);
+
+    lastTick = drawTime;
+  }
+}
+
 void GameEngine::GameLoop()
 {
-
   while (!m_stopGameLoop) {
     static auto lastTick = std::chrono::steady_clock::now();
 
@@ -35,8 +54,7 @@ void GameEngine::GameLoop()
 
     lastTick = updateTime;
 
-    // FIXME: all keyboard events cause also a re-draw, figure out a way around this?
-    // m_screen.PostEvent(ftxui::Event::Custom);
+    m_screen.PostEvent(ftxui::Event::Custom);
   }
 };
 }// namespace Sumo

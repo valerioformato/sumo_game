@@ -7,7 +7,7 @@
 
 namespace Sumo {
 
-ftxui::Element Renderer::DrawScene()
+void Renderer::DrawScene()
 {
   static auto lastFrameTime = std::chrono::steady_clock::now();
 
@@ -66,9 +66,10 @@ ftxui::Element Renderer::DrawScene()
 
   const auto drawEnd = std::chrono::steady_clock::now();
 
-  // now actually draw the game elements
-  auto result = ftxui::hbox({ ftxui::vbox({ m_screenBuffer | ftxui::border, ftxui::text("") | ftxui::flex }),
-    ftxui::vbox({ ftxui::text("Frame: " + std::to_string(m_frameCounter)),
+  ++m_frameCounter;
+  lastFrameTime = drawEnd;
+
+  m_debugElement = ftxui::vbox({ ftxui::text("Frame: " + std::to_string(m_frameCounter)),
       ftxui::text(fmt::format(
         "Total draw time: {}", std::chrono::duration_cast<std::chrono::milliseconds>(drawEnd - lastFrameTime))),
       ftxui::text(fmt::format(
@@ -77,12 +78,12 @@ ftxui::Element Renderer::DrawScene()
         "Background draw time: {}", std::chrono::duration_cast<std::chrono::milliseconds>(bgDrawEnd - bgDrawStart))),
       ftxui::text(fmt::format(
         "Arena draw time: {}", std::chrono::duration_cast<std::chrono::milliseconds>(drawEnd - arenaDrawStart))),
-      playerDebugText }) });
+      playerDebugText });
+}
 
-  ++m_frameCounter;
-  lastFrameTime = drawEnd;
-
-  return result;
+ftxui::Element Renderer::Render(){
+  // now actually draw the game elements
+  return ftxui::hbox({ m_bufferElement, m_debugElement });
 };
 
 }// namespace Sumo
