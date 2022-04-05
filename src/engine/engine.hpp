@@ -8,11 +8,8 @@
 #include <ftxui/component/screen_interactive.hpp>// for ScreenInteractive
 
 // project headers
-#include "ecs/components.hpp"
-#include "ecs/entity_manager.hpp"
 #include "engine/renderer.hpp"
 #include "engine/scene.hpp"
-
 #include "game/ring_scene.hpp"
 
 namespace Sumo {
@@ -25,24 +22,24 @@ public:
   GameEngine();
   ~GameEngine();
 
+  void run();
+
   GameEngine(const GameEngine &) = delete;
 
 private:
-  std::shared_ptr<EntityManager> m_entityManager = std::make_unique<EntityManager>();
-
-  std::shared_ptr<GameScene> m_scene = std::make_shared<Game::RingScene>(m_entityManager);
+  std::unique_ptr<GameScene> m_scene = std::make_unique<Game::RingScene>();
 
   Renderer m_renderer{ BUFFER_WIDTH, BUFFER_HEIGHT };
 
-  ftxui::Component m_mainComponent{ m_renderer.ftxRenderer };
+  ftxui::Component m_mainComponent;
   ftxui::ScreenInteractive m_screen{ ftxui::ScreenInteractive::Fullscreen() };
 
-  void GameLoop();
   void DrawLoop();
+  void Tick();
 
   std::atomic<bool> m_stopGameLoop;
-  std::thread m_gameThread{ &GameEngine::GameLoop, this };
   std::thread m_drawThread{ &GameEngine::DrawLoop, this };
+  std::thread m_gameThread{ &GameEngine::Tick, this };
 };
 }// namespace Sumo
 

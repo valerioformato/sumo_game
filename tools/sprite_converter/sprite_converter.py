@@ -25,7 +25,7 @@ def convert_sprite(imagefile, sprite_name):
         f"    constexpr std::array<Color, {dimx*dimy}> {sprite_name}_data = {{ {data[:-2]} }};\n"
         "// clang-format on\n"
         "\n"
-        f"    constexpr Sprite {sprite_name}{{ {dimx}U, {dimy}U, {sprite_name}_data }};"
+        f"    constexpr Sprite {sprite_name}{{ {{ {dimx}U, {dimy}U }}, {sprite_name}_data }};"
         "}\n"
         "#endif\n"
     )

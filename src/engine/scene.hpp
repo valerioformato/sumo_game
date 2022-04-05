@@ -5,27 +5,24 @@
 #include <chrono>
 
 // project headers
+#include "engine/sprite.hpp"
 #include "utils/bitmap.hpp"
-
-#include "ecs/components.hpp"
-#include "ecs/entity.hpp"
+#include "utils/clock.hpp"
 
 namespace Sumo {
-
-using milliseconds = std::chrono::duration<double, std::milli>;
 
 class GameScene
 {
 public:
   GameScene() = default;
-  explicit GameScene(std::shared_ptr<EntityManager> entMgr) : entityManager{ entMgr } {}
   virtual ~GameScene() = default;
 
   virtual void Update(milliseconds dt) = 0;
 
-  std::vector<Ecs::Entity> entities;
-  std::shared_ptr<EntityManager> entityManager;
+  using DrawableEntity = std::pair<Sprite, vec2u>;
+  virtual std::vector<DrawableEntity> DrawableEntities() = 0;
 };
+
 }// namespace Sumo
 
 #endif

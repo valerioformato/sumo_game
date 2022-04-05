@@ -14,7 +14,6 @@ namespace Sumo::Game {
 struct PlayerController
 {
   ftxui::ComponentDecorator eventHandler;
-  // std::shared_ptr<PlayableCharacter> character{ nullptr };
 };
 }// namespace Sumo::Game
 

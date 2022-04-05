@@ -4,13 +4,15 @@ namespace Sumo {
 
 GameEngine::GameEngine()
 {
-  m_renderer.currentScene = m_scene;
+  m_mainComponent = ftxui::Renderer([&] {
+    m_renderer.begin();
+
+    return m_renderer.end();
+  });
 
   // FIXME: ugly, but temporary
-  auto scene = std::static_pointer_cast<Game::RingScene>(m_scene);
-  m_mainComponent |= scene->player1Controller.eventHandler;
-
-  m_screen.Loop(m_mainComponent);
+  auto *scene = dynamic_cast<Game::RingScene *>(m_scene.get());
+  m_mainComponent |= scene->EventHandler();
 };
 
 GameEngine::~GameEngine()
@@ -30,7 +32,7 @@ void GameEngine::DrawLoop()
   while (!m_stopGameLoop) {
     static auto lastDraw = std::chrono::steady_clock::now();
 
-    m_renderer.DrawScene();
+    for (auto [sprite, position] : m_scene->DrawableEntities()) { m_renderer.submit(sprite, position); }
 
     auto drawTime = std::chrono::steady_clock::now();
     auto dt = std::chrono::duration_cast<milliseconds>(drawTime - lastDraw);
@@ -41,7 +43,9 @@ void GameEngine::DrawLoop()
   }
 }
 
-void GameEngine::GameLoop()
+void GameEngine::run() { m_screen.Loop(m_mainComponent); }
+
+void GameEngine::Tick()
 {
   while (!m_stopGameLoop) {
     static auto lastTick = std::chrono::steady_clock::now();

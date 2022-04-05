@@ -6,7 +6,7 @@
 namespace Sumo::Game {
 struct PlayableCharacter
 {
-  Sprite sprite{ 0U, 0U, {} };
+  Sprite sprite{ { 0U, 0U }, {} };
   vec2f position{ 0, 0 };
   vec2f velocity{ 0, 0 };
 };

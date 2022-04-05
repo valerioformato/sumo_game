@@ -4,7 +4,6 @@ find_package(docopt CONFIG)
 
 set(GAME_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
 
-add_subdirectory(ecs)
 add_subdirectory(engine)
 add_subdirectory(game)
 

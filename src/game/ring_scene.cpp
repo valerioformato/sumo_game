@@ -8,15 +8,14 @@ namespace Sumo::Game {
 
 constexpr std::array tempPlayerSprite{ Color{ 255, 255, 255 } };// NOLINT magic numbers
 
-RingScene::RingScene(std::shared_ptr<EntityManager> entManager) : GameScene(std::move(entManager))
+RingScene::RingScene()
 {
-  auto &ground_entity = entities.emplace_back(entityManager->add("ground"));
-  entityManager->add_component(ground_entity, Ecs::Components::BackgroundSpriteComponent(Sumo::Sprites::sand_tile));
+  m_groundSprite = Sprites::sand_tile;
 
   // test sprite: one white square :)
   // TODO: replace with real sprite
-  player1 = PlayableCharacter{ Sprite{ 1U, 1U, tempPlayerSprite } };
-  player1Controller = PlayerController{ .eventHandler = ftxui::CatchEvent([this](const ftxui::Event &event) {
+  m_player1 = PlayableCharacter{ Sprite{ { 1U, 1U }, tempPlayerSprite } };
+  m_player1Controller = PlayerController{ .eventHandler = ftxui::CatchEvent([this](const ftxui::Event &event) {
     bool handled = true;
     vec2f velocity{ 0, 0 };
 
@@ -32,7 +31,7 @@ RingScene::RingScene(std::shared_ptr<EntityManager> entManager) : GameScene(std:
       handled = false;
     }
 
-    player1.velocity = velocity;
+    m_player1.velocity = velocity;
 
     return handled;
   }) };
@@ -47,6 +46,10 @@ void RingScene::Update(milliseconds dt)
 
   lastTick = tick;
 
-  player1.position += pSpeed * tick * player1.velocity;
+  m_player1.position += pSpeed * tick * m_player1.velocity;
 }
+
+std::vector<GameScene::DrawableEntity> RingScene::DrawableEntities() { return {}; };
+
+
 }// namespace Sumo::Game

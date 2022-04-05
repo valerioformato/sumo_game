@@ -4,13 +4,9 @@
 // dependencies headers
 #include <ftxui/component/component.hpp>// for Slider
 
+#include "utils/color.hpp"
+
 namespace Sumo {
-struct Color
-{
-  std::uint8_t R{};
-  std::uint8_t G{};
-  std::uint8_t B{};
-};
 
 // A simple way of representing a bitmap on screen using only characters
 struct Bitmap : ftxui::Node
