@@ -16,13 +16,16 @@ GameEngine::GameEngine()
 GameEngine::~GameEngine()
 {
   m_stopGameLoop = true;
+  m_drawThread.join();
   m_gameThread.join();
 }
+
+using milliseconds = std::chrono::duration<double, std::milli>;
 
 void GameEngine::DrawLoop()
 {
   using namespace std::chrono_literals;
-  static constexpr std::chrono::milliseconds targetFrameTime = 1.0s / 60.0;
+  static constexpr milliseconds targetFrameTime = 1.0s / 30.0;
 
   while (!m_stopGameLoop) {
     static auto lastDraw = std::chrono::steady_clock::now();
@@ -30,12 +33,11 @@ void GameEngine::DrawLoop()
     m_renderer.DrawScene();
 
     auto drawTime = std::chrono::steady_clock::now();
-    auto dt = std::chrono::duration_cast<std::chrono::milliseconds>(updateTime - lastTick);
+    auto dt = std::chrono::duration_cast<milliseconds>(drawTime - lastDraw);
 
-    if(dt < targetFrameTime)
-      std::this_thread::sleep_for(targetFrameTime - dt);
+    if (dt.count() < targetFrameTime.count()) { std::this_thread::sleep_for(targetFrameTime - dt); }
 
-    lastTick = drawTime;
+    lastDraw = drawTime;
   }
 }
 
@@ -49,7 +51,7 @@ void GameEngine::GameLoop()
 
     auto updateTime = std::chrono::steady_clock::now();
 
-    auto dt = std::chrono::duration_cast<std::chrono::milliseconds>(updateTime - lastTick);
+    auto dt = std::chrono::duration_cast<milliseconds>(updateTime - lastTick);
     m_scene->Update(dt);
 
     lastTick = updateTime;

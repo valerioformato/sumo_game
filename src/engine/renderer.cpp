@@ -19,6 +19,8 @@ void Renderer::DrawScene()
   using BackgroundSpriteComponent = Ecs::Components::BackgroundSpriteComponent;
   auto eM = currentScene->entityManager;
 
+  std::lock_guard g{ m_screenBufferMtx };
+
   // FIXME: this is temporary, should be generalized properly
   const auto bgDrawStart = std::chrono::steady_clock::now();
   auto groundEntity = currentScene->entities[0];
@@ -66,22 +68,23 @@ void Renderer::DrawScene()
 
   const auto drawEnd = std::chrono::steady_clock::now();
 
+  m_debugElement = ftxui::vbox({ ftxui::text("Frame: " + std::to_string(m_frameCounter)),
+    ftxui::text(fmt::format(
+      "Total draw time: {}", std::chrono::duration_cast<std::chrono::milliseconds>(drawEnd - lastFrameTime))),
+    ftxui::text(fmt::format(
+      "Get scene time: {}", std::chrono::duration_cast<std::chrono::milliseconds>(bgDrawStart - drawStart))),
+    ftxui::text(fmt::format(
+      "Background draw time: {}", std::chrono::duration_cast<std::chrono::milliseconds>(bgDrawEnd - bgDrawStart))),
+    ftxui::text(fmt::format(
+      "Arena draw time: {}", std::chrono::duration_cast<std::chrono::milliseconds>(drawEnd - arenaDrawStart))),
+    playerDebugText });
+
   ++m_frameCounter;
   lastFrameTime = drawEnd;
-
-  m_debugElement = ftxui::vbox({ ftxui::text("Frame: " + std::to_string(m_frameCounter)),
-      ftxui::text(fmt::format(
-        "Total draw time: {}", std::chrono::duration_cast<std::chrono::milliseconds>(drawEnd - lastFrameTime))),
-      ftxui::text(fmt::format(
-        "Get scene time: {}", std::chrono::duration_cast<std::chrono::milliseconds>(bgDrawStart - drawStart))),
-      ftxui::text(fmt::format(
-        "Background draw time: {}", std::chrono::duration_cast<std::chrono::milliseconds>(bgDrawEnd - bgDrawStart))),
-      ftxui::text(fmt::format(
-        "Arena draw time: {}", std::chrono::duration_cast<std::chrono::milliseconds>(drawEnd - arenaDrawStart))),
-      playerDebugText });
 }
 
-ftxui::Element Renderer::Render(){
+ftxui::Element Renderer::Render()
+{
   // now actually draw the game elements
   return ftxui::hbox({ m_bufferElement, m_debugElement });
 };

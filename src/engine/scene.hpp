@@ -11,6 +11,9 @@
 #include "ecs/entity.hpp"
 
 namespace Sumo {
+
+using milliseconds = std::chrono::duration<double, std::milli>;
+
 class GameScene
 {
 public:
@@ -18,7 +21,7 @@ public:
   explicit GameScene(std::shared_ptr<EntityManager> entMgr) : entityManager{ entMgr } {}
   virtual ~GameScene() = default;
 
-  virtual void Update(std::chrono::milliseconds dt) = 0;
+  virtual void Update(milliseconds dt) = 0;
 
   std::vector<Ecs::Entity> entities;
   std::shared_ptr<EntityManager> entityManager;

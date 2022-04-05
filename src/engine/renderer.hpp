@@ -18,15 +18,17 @@ public:
   std::shared_ptr<GameScene> currentScene;
   ftxui::Component ftxRenderer{ ftxui::Renderer([this] { return this->Render(); }) };
 
+  void DrawScene();
+
 private:
+  std::mutex m_screenBufferMtx;
   std::shared_ptr<Bitmap> m_screenBuffer;
 
-  ftxui::Element m_bufferElement{ftxui::vbox({ m_screenBuffer | ftxui::border, ftxui::text("") | ftxui::flex })};
-  ftxui::Element m_debugElement{};
+  ftxui::Element m_bufferElement{ ftxui::vbox({ m_screenBuffer | ftxui::border, ftxui::text("") | ftxui::flex }) };
+  ftxui::Element m_debugElement{ ftxui::vbox({ ftxui::text("") }) };
 
   unsigned long long m_frameCounter{ 0 };
 
-  void DrawScene();
   ftxui::Element Render();
 };
 }// namespace Sumo

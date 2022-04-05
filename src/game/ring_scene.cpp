@@ -38,13 +38,15 @@ RingScene::RingScene(std::shared_ptr<EntityManager> entManager) : GameScene(std:
   }) };
 }
 
-void RingScene::Update(std::chrono::milliseconds dt)
+void RingScene::Update(milliseconds dt)
 {
-  static constexpr float millisecondToSecond = 0.001F;
-  [[maybe_unused]] float tick = millisecondToSecond * static_cast<float>(dt.count());
+  static constexpr float millisecondsToSeconds = 0.001F;
+  static constexpr float pSpeed = 3.0F;
+
+  auto tick = millisecondsToSeconds * static_cast<float>(dt.count());
 
   lastTick = tick;
 
-  player1.position += tick * player1.velocity;
+  player1.position += pSpeed * tick * player1.velocity;
 }
 }// namespace Sumo::Game
