@@ -1,12 +1,11 @@
 #include <ftxui/component/component.hpp>
 #include <ftxui/component/event.hpp>
 
+#include "game/assets/sprites/blu.hpp"
 #include "game/assets/sprites/sand_tile.hpp"
 #include "game/ring_scene.hpp"
 
 namespace Sumo::Game {
-
-constexpr std::array tempPlayerSprite{ Color{ 255, 255, 255 } };// NOLINT magic numbers
 
 RingScene::RingScene()
 {
@@ -14,7 +13,7 @@ RingScene::RingScene()
 
   // test sprite: one white square :)
   // TODO: replace with real sprite
-  m_player1 = PlayableCharacter{ Sprite{ { 1U, 1U }, tempPlayerSprite } };
+  m_player1 = PlayableCharacter{ Sprites::blu.frame(0) };
   m_player1Controller = PlayerController{ .eventHandler = ftxui::CatchEvent([this](const ftxui::Event &event) {
     bool handled = true;
     vec2f velocity{ 0, 0 };
@@ -54,6 +53,9 @@ std::vector<GameScene::DrawableEntity> RingScene::DrawableEntities()
   std::vector<GameScene::DrawableEntity> entities;
 
   entities.emplace_back(std::make_tuple(m_groundSprite, vec2u{ 0U, 0U }, true));
+
+  vec2u pos{ static_cast<unsigned int>(m_player1.position.x), static_cast<unsigned int>(m_player1.position.y) };
+  entities.emplace_back(std::make_tuple(m_player1.sprite, pos, false));
 
   return entities;
 }

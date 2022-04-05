@@ -21,7 +21,8 @@ void Renderer::draw_sprite_at(Sprite sprite, vec2u screenPos)
   for (auto y = tly; y < bry; ++y) {
     for (auto x = tlx; x < brx; ++x) {
       if (in_range(x, 0U, m_frameBuffer->width()) && in_range(y, 0U, m_frameBuffer->height())) {
-        m_frameBuffer->at(x, y) = sprite.at({ x - tlx, y - tly });
+        m_frameBuffer->at(x, y) =
+          alpha_blend(sprite.at({ x - tlx, y - tly }), m_frameBuffer->at(x, y), sprite.at({ x - tlx, y - tly }).A);
       }
     }
   }

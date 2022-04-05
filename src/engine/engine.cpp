@@ -41,8 +41,8 @@ void GameEngine::DrawLoop()
     auto dt = std::chrono::duration_cast<milliseconds>(drawTime - lastDraw);
 
     m_renderer.display_debug_text(std::to_string(frameCounter));
-    m_renderer.display_debug_text(
-      fmt::format("{} fps, frame time = {}", 1000.0 / dt.count(), dt));// NOLINT magic numbers
+    m_renderer.display_debug_text(fmt::format(
+      "{} fps, frame time = {}", static_cast<unsigned int>(1000.0 / dt.count()), dt));// NOLINT magic numbers
 
     ++frameCounter;
     lastDraw = drawTime;
