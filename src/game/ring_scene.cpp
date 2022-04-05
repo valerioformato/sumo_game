@@ -6,7 +6,7 @@ namespace Sumo::Game {
 
 RingScene::RingScene(GameEngine *engine) :
   GameScene(engine),
-  m_groundSprite(&Sprites::sand_tile, {0,0}, {32,32})
+  m_groundSprite(&Sprites::sand_tile, {0,0}, {32,32}) 
 {
   
 }

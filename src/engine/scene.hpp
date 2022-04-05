@@ -4,9 +4,11 @@
 // project headers
 #include "utils/bitmap.hpp"
 
-#include "engine/engine.hpp"
 
 namespace Sumo {
+
+class GameEngine; 
+
 class GameScene
 {
 public:

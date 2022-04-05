@@ -11,8 +11,6 @@
 #include "engine/renderer.hpp"
 #include "engine/scene.hpp"
 
-#include "game/ring_scene.hpp"
-
 namespace Sumo {
 class GameEngine
 {
@@ -33,7 +31,7 @@ public:
   GameEngine(const GameEngine &) = delete;
 
 private:
-  std::unique_ptr<GameScene> m_scene = std::make_unique<Game::RingScene>(this);
+  std::unique_ptr<GameScene> m_scene; 
 
   Renderer m_renderer{ BUFFER_WIDTH, BUFFER_HEIGHT };
 

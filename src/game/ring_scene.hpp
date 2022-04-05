@@ -3,6 +3,7 @@
 
 #include "engine/scene.hpp"
 #include "engine/sprite.hpp"
+#include "engine/engine.hpp"
 
 namespace Sumo::Game {
 class RingScene : public GameScene

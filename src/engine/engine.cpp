@@ -1,8 +1,11 @@
 #include "engine/engine.hpp"
 
+#include "game/ring_scene.hpp"
+
 namespace Sumo {
 
-GameEngine::GameEngine()
+GameEngine::GameEngine() : 
+  m_scene{std::make_unique<Game::RingScene>(this)}
 {
 };
 
