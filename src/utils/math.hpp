@@ -13,7 +13,7 @@ concept Numeric = std::integral<T> || std::floating_point<T>;
 [[nodiscard]] constexpr auto
   in_range(Numeric auto const x, Numeric auto const range_start, Numeric auto const range_end)
 {
-  return x >= range_start && x <= range_end;
+  return x >= range_start && x < range_end;
 }
 
 [[nodiscard]] constexpr auto clamp(Numeric auto const x, Numeric auto const range_start, Numeric auto const range_end)

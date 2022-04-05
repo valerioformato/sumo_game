@@ -49,7 +49,14 @@ void RingScene::Update(milliseconds dt)
   m_player1.position += pSpeed * tick * m_player1.velocity;
 }
 
-std::vector<GameScene::DrawableEntity> RingScene::DrawableEntities() { return {}; };
+std::vector<GameScene::DrawableEntity> RingScene::DrawableEntities()
+{
+  std::vector<GameScene::DrawableEntity> entities;
+
+  entities.emplace_back(std::make_tuple(m_groundSprite, vec2u{ 0U, 0U }, true));
+
+  return entities;
+}
 
 
 }// namespace Sumo::Game

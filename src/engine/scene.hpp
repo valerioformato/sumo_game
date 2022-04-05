@@ -19,7 +19,7 @@ public:
 
   virtual void Update(milliseconds dt) = 0;
 
-  using DrawableEntity = std::pair<Sprite, vec2u>;
+  using DrawableEntity = std::tuple<Sprite, vec2u, bool>;
   virtual std::vector<DrawableEntity> DrawableEntities() = 0;
 };
 

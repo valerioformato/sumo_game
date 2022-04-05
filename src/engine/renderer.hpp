@@ -21,15 +21,20 @@ public:
 
   void begin(const Color &clearColor = Color{});
 
-  void submit(const Sprite &sprite, vec2u screenPos);
+  void submit(Sprite sprite, vec2u screenPos, bool tiled = false);
 
   ftxui::Element end();
+
+  void display_debug_text(std::string text) { m_debugElement = ftxui::vbox({ m_debugElement, ftxui::text(text) }); }
+  void reset_debug_text() { m_debugElement = ftxui::vbox({}); };
 
 private:
   std::shared_ptr<Bitmap> m_frameBuffer;
 
   ftxui::Element m_bufferElement{ ftxui::vbox({ m_frameBuffer | ftxui::border, ftxui::text("") | ftxui::flex }) };
-  ftxui::Element m_debugElement{ ftxui::vbox({ ftxui::text("") }) };
+  ftxui::Element m_debugElement{ ftxui::vbox({}) };
+
+  void draw_sprite_at(Sprite sprite, vec2u screenPos);
 };
 
 }// namespace Sumo
