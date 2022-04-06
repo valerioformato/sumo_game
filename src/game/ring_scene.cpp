@@ -2,7 +2,6 @@
 #include <ftxui/component/event.hpp>
 
 #include "game/assets/sprites/blu.hpp"
-#include "game/assets/sprites/sand_tile.hpp"
 #include "game/ring_scene.hpp"
 
 namespace Sumo::Game {

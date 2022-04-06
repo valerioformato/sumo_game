@@ -2,7 +2,7 @@
 #define SUMO_RINGSCENE_HPP
 
 #include "engine/scene.hpp"
-#include "engine/sprite.hpp"
+#include "game/assets/sprites/sand_tile.hpp"
 #include "game/playable_character.hpp"
 #include "game/player_controller.hpp"
 
