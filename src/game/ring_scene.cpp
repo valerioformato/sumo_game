@@ -45,7 +45,8 @@ void RingScene::update(const milliseconds dt)
     player1_animation_timer.restart();
   }
 
-  auto tick = millisecondsToSeconds * static_cast<float>(dt.count());
+  const auto tick = millisecondsToSeconds * static_cast<float>(dt.count());
+
   last_tick = tick;
 
   m_player1.position += pSpeed * tick * m_player1.velocity;
@@ -58,7 +59,6 @@ std::vector<GameScene::DrawableEntity> RingScene::drawableEntities()
   entities.emplace_back(std::make_tuple(m_groundSprite, vec2u{ 0U, 0U }, true));
 
   auto pos = static_cast<vec2u>(m_player1.position);
-
   entities.emplace_back(std::make_tuple(m_player1.sprite, pos, false));
 
   return entities;
