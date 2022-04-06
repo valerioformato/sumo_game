@@ -9,6 +9,7 @@ namespace Sumo::Game {
 RingScene::RingScene()
 {
   m_player1 = PlayableCharacter{ Sprites::blu.frame(0) };
+  m_player1.position = vec2f{ 80.0F, 40.0F };// NOLINT magic numbers
   m_player1Controller = PlayerController{ .event_handler = ftxui::CatchEvent([this](const ftxui::Event &event) {
     bool handled = true;
     vec2f velocity{ 0, 0 };
