@@ -8,8 +8,6 @@ namespace Sumo::Game {
 
 RingScene::RingScene()
 {
-  // test sprite: one white square :)
-  // TODO: replace with real sprite
   m_player1 = PlayableCharacter{ Sprites::blu.frame(0) };
   m_player1Controller = PlayerController{ .eventHandler = ftxui::CatchEvent([this](const ftxui::Event &event) {
     bool handled = true;
@@ -38,8 +36,16 @@ void RingScene::Update(milliseconds dt)
   static constexpr float millisecondsToSeconds = 0.001F;
   static constexpr float pSpeed = 3.0F;
 
-  auto tick = millisecondsToSeconds * static_cast<float>(dt.count());
+  using namespace std::chrono_literals;
+  static constexpr milliseconds player_animation_frametime = 500.0ms;
 
+  static Clock player1_animation_timer;
+  if (player1_animation_timer.elapsedTime().count() > player_animation_frametime.count()) {
+    m_player1.sprite = Sprites::blu.frame(++m_player1.animation_frame % Sprites::blu.frames);
+    player1_animation_timer.restart();
+  }
+
+  auto tick = millisecondsToSeconds * static_cast<float>(dt.count());
   lastTick = tick;
 
   m_player1.position += pSpeed * tick * m_player1.velocity;
