@@ -9,8 +9,6 @@ namespace Sumo::Game {
 
 RingScene::RingScene()
 {
-  m_groundSprite = Sprites::sand_tile;
-
   // test sprite: one white square :)
   // TODO: replace with real sprite
   m_player1 = PlayableCharacter{ Sprites::blu.frame(0) };

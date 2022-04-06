@@ -24,9 +24,10 @@ public:
   float lastTick{ 0 };
 
 private:
+  Sprite m_groundSprite{ Sprites::sand_tile };
+
   PlayableCharacter m_player1;
   PlayerController m_player1Controller;
-  Sprite m_groundSprite;
 };
 }// namespace Sumo::Game
 
