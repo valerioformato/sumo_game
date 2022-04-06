@@ -2,7 +2,7 @@
 #define SUMO_RINGSCENE_HPP
 
 #include "engine/scene.hpp"
-#include "engine/sprite.hpp"
+#include "game/assets/sprites/sand_tile.hpp"
 #include "game/playable_character.hpp"
 #include "game/player_controller.hpp"
 
@@ -24,9 +24,10 @@ public:
   float lastTick{ 0 };
 
 private:
+  Sprite m_groundSprite{ Sprites::sand_tile };
+
   PlayableCharacter m_player1;
   PlayerController m_player1Controller;
-  Sprite m_groundSprite;
 };
 }// namespace Sumo::Game
 
