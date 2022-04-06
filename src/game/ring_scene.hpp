@@ -13,15 +13,15 @@ class RingScene : public GameScene
 public:
   explicit RingScene();
 
-  void Draw(Bitmap &screenBuffer);
-  void Update(milliseconds dt) override;
-  std::vector<DrawableEntity> DrawableEntities() override;
+  void draw(Bitmap &screen_buffer);
+  void update(milliseconds dt) override;
+  std::vector<DrawableEntity> drawableEntities() override;
 
 
-  [[nodiscard]] ftxui::ComponentDecorator EventHandler() { return m_player1Controller.eventHandler; }
+  [[nodiscard]] ftxui::ComponentDecorator EventHandler() { return m_player1Controller.event_handler; }
 
   // TODO: remove later
-  float lastTick{ 0 };
+  float last_tick{ 0 };
 
 private:
   Sprite m_groundSprite{ Sprites::sand_tile };

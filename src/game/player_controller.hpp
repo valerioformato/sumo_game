@@ -13,7 +13,7 @@
 namespace Sumo::Game {
 struct PlayerController
 {
-  ftxui::ComponentDecorator eventHandler;
+  ftxui::ComponentDecorator event_handler;
 };
 }// namespace Sumo::Game
 

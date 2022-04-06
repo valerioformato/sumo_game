@@ -31,15 +31,15 @@ private:
 
   Renderer m_renderer{ BUFFER_WIDTH, BUFFER_HEIGHT };
 
-  ftxui::Component m_mainComponent;
+  ftxui::Component m_main_component;
   ftxui::ScreenInteractive m_screen{ ftxui::ScreenInteractive::Fullscreen() };
 
-  void DrawLoop();
-  void Tick();
+  void drawLoop();
+  void tick();
 
-  std::atomic<bool> m_stopGameLoop;
-  std::thread m_drawThread{ &GameEngine::DrawLoop, this };
-  std::thread m_gameThread{ &GameEngine::Tick, this };
+  std::atomic<bool> m_stop_game_loop;
+  std::thread m_draw_thread{ &GameEngine::drawLoop, this };
+  std::thread m_game_thread{ &GameEngine::tick, this };
 };
 }// namespace Sumo
 

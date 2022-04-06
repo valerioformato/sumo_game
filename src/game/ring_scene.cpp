@@ -9,7 +9,7 @@ namespace Sumo::Game {
 RingScene::RingScene()
 {
   m_player1 = PlayableCharacter{ Sprites::blu.frame(0) };
-  m_player1Controller = PlayerController{ .eventHandler = ftxui::CatchEvent([this](const ftxui::Event &event) {
+  m_player1Controller = PlayerController{ .event_handler = ftxui::CatchEvent([this](const ftxui::Event &event) {
     bool handled = true;
     vec2f velocity{ 0, 0 };
 
@@ -31,7 +31,7 @@ RingScene::RingScene()
   }) };
 }
 
-void RingScene::Update(milliseconds dt)
+void RingScene::update(const milliseconds dt)
 {
   static constexpr float millisecondsToSeconds = 0.001F;
   static constexpr float pSpeed = 3.0F;
@@ -46,18 +46,19 @@ void RingScene::Update(milliseconds dt)
   }
 
   auto tick = millisecondsToSeconds * static_cast<float>(dt.count());
-  lastTick = tick;
+  last_tick = tick;
 
   m_player1.position += pSpeed * tick * m_player1.velocity;
 }
 
-std::vector<GameScene::DrawableEntity> RingScene::DrawableEntities()
+std::vector<GameScene::DrawableEntity> RingScene::drawableEntities()
 {
   std::vector<GameScene::DrawableEntity> entities;
 
   entities.emplace_back(std::make_tuple(m_groundSprite, vec2u{ 0U, 0U }, true));
 
-  vec2u pos{ static_cast<unsigned int>(m_player1.position.x), static_cast<unsigned int>(m_player1.position.y) };
+  auto pos = static_cast<vec2u>(m_player1.position);
+
   entities.emplace_back(std::make_tuple(m_player1.sprite, pos, false));
 
   return entities;

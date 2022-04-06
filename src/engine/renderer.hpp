@@ -15,26 +15,26 @@ class Renderer
 {
 public:
   Renderer(std::size_t width, std::size_t height)
-    : m_frameBuffer(std::make_shared<Bitmap>(width, height)){
+    : m_frame_buffer(std::make_shared<Bitmap>(width, height)){
 
       };
 
   void begin(const Color &clearColor = Color{});
 
-  void submit(Sprite sprite, vec2u screenPos, bool tiled = false);
+  void submit(Sprite sprite, vec2u screen_pos, bool tiled = false);
 
   ftxui::Element end();
 
-  void display_debug_text(std::string text) { m_debugElement = ftxui::vbox({ m_debugElement, ftxui::text(text) }); }
-  void reset_debug_text() { m_debugElement = ftxui::vbox({}); };
+  void display_debug_text(std::string text) { m_debug_element = ftxui::vbox({ m_debug_element, ftxui::text(text) }); }
+  void reset_debug_text() { m_debug_element = ftxui::vbox({}); };
 
 private:
-  std::shared_ptr<Bitmap> m_frameBuffer;
+  std::shared_ptr<Bitmap> m_frame_buffer;
 
-  ftxui::Element m_bufferElement{ ftxui::vbox({ m_frameBuffer | ftxui::border, ftxui::text("") | ftxui::flex }) };
-  ftxui::Element m_debugElement{ ftxui::vbox({}) };
+  ftxui::Element m_buffer_element{ ftxui::vbox({ m_frame_buffer | ftxui::border, ftxui::text("") | ftxui::flex }) };
+  ftxui::Element m_debug_element{ ftxui::vbox({}) };
 
-  void draw_sprite_at(Sprite sprite, vec2u screenPos);
+  void drawSpriteAt(Sprite sprite, vec2u screen_pos);
 };
 
 }// namespace Sumo

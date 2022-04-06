@@ -11,42 +11,42 @@ namespace Sumo {
 
 void Renderer::begin(const Color &clearColor)
 {
-  std::fill(m_frameBuffer->data().begin(), m_frameBuffer->data().end(), clearColor);
+  std::fill(m_frame_buffer->data().begin(), m_frame_buffer->data().end(), clearColor);
 }
 
-void Renderer::draw_sprite_at(Sprite sprite, vec2u screenPos)
+void Renderer::drawSpriteAt(const Sprite sprite, vec2u screen_pos)
 {
-  const auto &[tlx, tly] = screenPos;
-  const auto &[brx, bry] = screenPos + sprite.dimensions;
+  const auto &[tlx, tly] = screen_pos;
+  const auto &[brx, bry] = screen_pos + sprite.dimensions;
   for (auto y = tly; y < bry; ++y) {
     for (auto x = tlx; x < brx; ++x) {
-      if (in_range(x, 0U, m_frameBuffer->width()) && in_range(y, 0U, m_frameBuffer->height())) {
-        m_frameBuffer->at(x, y) =
-          alpha_blend(sprite.at({ x - tlx, y - tly }), m_frameBuffer->at(x, y), sprite.at({ x - tlx, y - tly }).A);
+      if (in_range(x, 0U, m_frame_buffer->width()) && in_range(y, 0U, m_frame_buffer->height())) {
+        m_frame_buffer->at(x, y) =
+          alpha_blend(sprite.at({ x - tlx, y - tly }), m_frame_buffer->at(x, y), sprite.at({ x - tlx, y - tly }).a);
       }
     }
   }
 }
 
 
-void Renderer::submit(Sprite sprite, vec2u screenPos, bool tiled)
+void Renderer::submit(const Sprite sprite, vec2u screen_pos, const bool tiled)
 {
   if (!tiled) {
-    draw_sprite_at(sprite, screenPos);
+    drawSpriteAt(sprite, screen_pos);
   } else {
-    screenPos = { 0U, 0U };
-    for (unsigned int iy = 0U; iy < (m_frameBuffer->height() / sprite.dimensions.y + 1); ++iy) {
-      for (unsigned int ix = 0U; ix < (m_frameBuffer->width() / sprite.dimensions.x + 1); ++ix) {
-        draw_sprite_at(sprite, screenPos);
-        screenPos.x += sprite.dimensions.x;
+    screen_pos = { 0U, 0U };
+    for (unsigned int iy = 0U; iy < (m_frame_buffer->height() / sprite.dimensions.y + 1); ++iy) {
+      for (unsigned int ix = 0U; ix < (m_frame_buffer->width() / sprite.dimensions.x + 1); ++ix) {
+        drawSpriteAt(sprite, screen_pos);
+        screen_pos.x += sprite.dimensions.x;
       }
-      screenPos.x = 0;
-      screenPos.y += sprite.dimensions.y;
+      screen_pos.x = 0;
+      screen_pos.y += sprite.dimensions.y;
     }
   }
 }
 
-ftxui::Element Renderer::end() { return ftxui::hbox({ m_bufferElement, m_debugElement }); }
+ftxui::Element Renderer::end() { return ftxui::hbox({ m_buffer_element, m_debug_element }); }
 
 
 }// namespace Sumo

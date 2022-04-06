@@ -32,6 +32,14 @@ template<Numeric T> struct vec2
     x += k, y *= k;
     return *this;
   }
+
+  template<typename U>
+  requires std::convertible_to<T, U>
+  explicit operator vec2<U>()
+  {
+    return vec2<U>{static_cast<U>(x), static_cast<U>(y)}; 
+  }
+
 };
 
 template<Numeric T> [[nodiscard]] vec2<T> constexpr operator-(vec2<T> const &rhs) { return { -rhs.x, -rhs.y }; }
