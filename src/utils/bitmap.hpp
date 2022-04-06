@@ -1,6 +1,8 @@
 #ifndef SUMO_BITMAP_HPP
 #define SUMO_BITMAP_HPP
 
+#include <mutex>
+
 // dependencies headers
 #include <ftxui/component/component.hpp>// for Slider
 
@@ -25,8 +27,11 @@ struct Bitmap final : ftxui::Node
     };
   }
 
+  [[nodiscard]] auto lock() noexcept { return std::lock_guard{ m_buffer_mutex }; }
+
   void Render(ftxui::Screen &screen) override
   {
+    auto g_lock = lock();
     for (std::size_t x = 0; x < m_width; ++x) {
       for (std::size_t y = 0; y < m_height / 2; ++y) {
         auto &p = screen.PixelAt(box_.x_min + static_cast<int>(x), box_.y_min + static_cast<int>(y));
@@ -46,6 +51,8 @@ struct Bitmap final : ftxui::Node
   [[nodiscard]] auto &data() noexcept { return m_pixels; }
 
 private:
+  std::mutex m_buffer_mutex;
+
   std::size_t m_width;
   std::size_t m_height;
 

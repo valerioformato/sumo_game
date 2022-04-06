@@ -51,7 +51,9 @@ void GameEngine::drawLoop()
 
     ++frame_counter;
 
-    if (draw_duration.count() < target_frame_time.count()) { std::this_thread::sleep_for(target_frame_time - draw_duration); }
+    if (draw_duration.count() < target_frame_time.count()) {
+      std::this_thread::sleep_for(target_frame_time - draw_duration);
+    }
   }
 }
 
