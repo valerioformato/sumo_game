@@ -17,10 +17,10 @@ public:
   GameScene() = default;
   virtual ~GameScene() = default;
 
-  virtual void Update(milliseconds dt) = 0;
+  virtual void update(milliseconds dt) = 0;
 
   using DrawableEntity = std::tuple<Sprite, vec2u, bool>;
-  virtual std::vector<DrawableEntity> DrawableEntities() = 0;
+  virtual std::vector<DrawableEntity> drawableEntities() = 0;
 };
 
 }// namespace Sumo

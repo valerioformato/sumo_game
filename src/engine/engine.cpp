@@ -8,69 +8,69 @@ namespace Sumo {
 GameEngine::GameEngine()
 {
   m_renderer.begin();
-  m_mainComponent = ftxui::Renderer([&] { return m_renderer.end(); });
+  m_main_component = ftxui::Renderer([&] { return m_renderer.end(); });
 
   // FIXME: ugly, but temporary
   auto *scene = dynamic_cast<Game::RingScene *>(m_scene.get());
-  m_mainComponent |= scene->EventHandler();
+  m_main_component |= scene->EventHandler();
 };
 
 GameEngine::~GameEngine()
 {
-  m_stopGameLoop = true;
-  m_drawThread.join();
-  m_gameThread.join();
+  m_stop_game_loop = true;
+  m_draw_thread.join();
+  m_game_thread.join();
 }
 
 using milliseconds = std::chrono::duration<double, std::milli>;
 
-void GameEngine::DrawLoop()
+void GameEngine::drawLoop()
 {
   using namespace std::chrono_literals;
-  static constexpr milliseconds targetFrameTime = 1.0s / 60.0;
+  static constexpr milliseconds target_frame_time = 1.0s / 60.0;
 
-  unsigned int frameCounter{ 0 };
+  unsigned int frame_counter{ 0 };
 
-  while (!m_stopGameLoop) {
-    static auto lastFrame = std::chrono::steady_clock::now();
+  while (!m_stop_game_loop) {
+    static auto last_frame = std::chrono::steady_clock::now();
     m_renderer.reset_debug_text();
 
 
     auto drawTime = std::chrono::steady_clock::now();
-    auto dt = std::chrono::duration_cast<milliseconds>(drawTime - lastFrame);
-    lastFrame = std::chrono::steady_clock::now();
+    auto dt = std::chrono::duration_cast<milliseconds>(drawTime - last_frame);
+    last_frame = std::chrono::steady_clock::now();
 
-    for (auto [sprite, position, tiled] : m_scene->DrawableEntities()) { m_renderer.submit(sprite, position, tiled); }
+    for (auto [sprite, position, tiled] : m_scene->drawableEntities()) { m_renderer.submit(sprite, position, tiled); }
 
-    m_renderer.display_debug_text(std::to_string(frameCounter));
+    m_renderer.display_debug_text(std::to_string(frame_counter));
     m_renderer.display_debug_text(fmt::format(
       "{} fps, frame time = {}", static_cast<unsigned int>(1000.0 / dt.count()), dt));// NOLINT magic numbers
 
-    auto drawEndTime = std::chrono::steady_clock::now();
-    auto drawDuration = std::chrono::duration_cast<milliseconds>(drawEndTime - drawTime);
+    auto draw_end_time = std::chrono::steady_clock::now();
+    auto draw_duration = std::chrono::duration_cast<milliseconds>(draw_end_time - drawTime);
 
-    ++frameCounter;
+    ++frame_counter;
 
-    if (drawDuration.count() < targetFrameTime.count()) { std::this_thread::sleep_for(targetFrameTime - drawDuration); }
+    if (draw_duration.count() < target_frame_time.count()) { std::this_thread::sleep_for(target_frame_time - draw_duration); }
   }
 }
 
-void GameEngine::run() { m_screen.Loop(m_mainComponent); }
+void GameEngine::run() { m_screen.Loop(m_main_component); }
 
-void GameEngine::Tick()
+void GameEngine::tick()
 {
-  while (!m_stopGameLoop) {
-    static auto lastTick = std::chrono::steady_clock::now();
+  while (!m_stop_game_loop) {
+    static auto last_tick = std::chrono::steady_clock::now();
 
     using namespace std::chrono_literals;
     std::this_thread::sleep_for(1.0s / 30.0);// NOLINT magic numbers
 
-    auto updateTime = std::chrono::steady_clock::now();
+    auto update_time = std::chrono::steady_clock::now();
 
-    auto dt = std::chrono::duration_cast<milliseconds>(updateTime - lastTick);
-    m_scene->Update(dt);
+    const auto dt = std::chrono::duration_cast<milliseconds>(update_time - last_tick);
+    m_scene->update(dt);
 
-    lastTick = updateTime;
+    last_tick = update_time;
 
     m_screen.PostEvent(ftxui::Event::Custom);
   }
