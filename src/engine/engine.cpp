@@ -27,27 +27,31 @@ using milliseconds = std::chrono::duration<double, std::milli>;
 void GameEngine::DrawLoop()
 {
   using namespace std::chrono_literals;
-  static constexpr milliseconds targetFrameTime = 1.0s / 30.0;
+  static constexpr milliseconds targetFrameTime = 1.0s / 60.0;
 
   unsigned int frameCounter{ 0 };
 
   while (!m_stopGameLoop) {
-    static auto lastDraw = std::chrono::steady_clock::now();
+    static auto lastFrame = std::chrono::steady_clock::now();
     m_renderer.reset_debug_text();
 
-    for (auto [sprite, position, tiled] : m_scene->DrawableEntities()) { m_renderer.submit(sprite, position, tiled); }
 
     auto drawTime = std::chrono::steady_clock::now();
-    auto dt = std::chrono::duration_cast<milliseconds>(drawTime - lastDraw);
+    auto dt = std::chrono::duration_cast<milliseconds>(drawTime - lastFrame);
+    lastFrame = std::chrono::steady_clock::now();
+
+    for (auto [sprite, position, tiled] : m_scene->DrawableEntities()) { m_renderer.submit(sprite, position, tiled); }
 
     m_renderer.display_debug_text(std::to_string(frameCounter));
     m_renderer.display_debug_text(fmt::format(
       "{} fps, frame time = {}", static_cast<unsigned int>(1000.0 / dt.count()), dt));// NOLINT magic numbers
 
-    ++frameCounter;
-    lastDraw = drawTime;
+    auto drawEndTime = std::chrono::steady_clock::now();
+    auto drawDuration = std::chrono::duration_cast<milliseconds>(drawEndTime - drawTime);
 
-    if (dt.count() < targetFrameTime.count()) { std::this_thread::sleep_for(targetFrameTime - dt); }
+    ++frameCounter;
+
+    if (drawDuration.count() < targetFrameTime.count()) { std::this_thread::sleep_for(targetFrameTime - drawDuration); }
   }
 }
 

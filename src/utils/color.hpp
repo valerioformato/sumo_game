@@ -2,6 +2,7 @@
 #define SUMO_COLOR_HPP
 
 #include <cstdint>
+#include <numeric>
 
 namespace Sumo {
 struct Color
