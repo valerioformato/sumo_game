@@ -9,9 +9,9 @@
 
 namespace Sumo {
 
-void Renderer::begin(const Color &clearColor)
+void Renderer::begin(const ColorI32 &clear_color)
 {
-  std::fill(m_frame_buffer->data().begin(), m_frame_buffer->data().end(), clearColor);
+  std::fill(m_frame_buffer->data().begin(), m_frame_buffer->data().end(), clear_color);
 }
 
 void Renderer::drawSpriteAt(const Sprite sprite, vec2u screen_pos)
@@ -22,7 +22,7 @@ void Renderer::drawSpriteAt(const Sprite sprite, vec2u screen_pos)
     for (auto x = tlx; x < brx; ++x) {
       if (in_range(x, 0U, m_frame_buffer->width()) && in_range(y, 0U, m_frame_buffer->height())) {
         m_frame_buffer->at(x, y) =
-          alpha_blend(sprite.at({ x - tlx, y - tly }), m_frame_buffer->at(x, y), sprite.at({ x - tlx, y - tly }).a);
+          alpha_blend(sprite.at({ x - tlx, y - tly }), m_frame_buffer->at(x, y));
       }
     }
   }

@@ -11,21 +11,21 @@ namespace Sumo {
 struct Sprite
 {
   vec2u dimensions{ 0U, 0U };
-  std::span<const Color> data{};
+  std::span<const ColorI32> data{};
 
-  [[nodiscard]] Color at(const vec2u pixel) const { return data[pixel.x + dimensions.x * pixel.y]; }
+  [[nodiscard]] ColorI32 at(const vec2u pixel) const { return data[pixel.x + dimensions.x * pixel.y]; }
 };
 
 struct AnimatedSprite
 {
   vec2u dimensions{ 0U, 0U };
   unsigned int frames;
-  std::span<const Color> data{};
+  std::span<const ColorI32> data{};
 
   [[nodiscard]] Sprite frame(unsigned int iframe) const
   {
     return Sprite{ dimensions,
-                   std::span<const Color>{ &data[iframe * dimensions.x * dimensions.y], dimensions.x * dimensions.y } };
+                   std::span<const ColorI32>{ &data[iframe * dimensions.x * dimensions.y], dimensions.x * dimensions.y } };
   }
 };
 

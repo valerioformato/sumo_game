@@ -19,13 +19,13 @@ public:
 
       };
 
-  void begin(const Color &clearColor = Color{});
+  void begin(const ColorI32 &clear_color = ColorI32{});
 
   void submit(Sprite sprite, vec2u screen_pos, bool tiled = false);
 
   ftxui::Element end();
 
-  void display_debug_text(std::string text) { m_debug_element = ftxui::vbox({ m_debug_element, ftxui::text(text) }); }
+  void display_debug_text(const std::string &text) { m_debug_element = ftxui::vbox({ m_debug_element, ftxui::text(text) }); }
   void reset_debug_text() { m_debug_element = ftxui::vbox({}); };
 
 private:

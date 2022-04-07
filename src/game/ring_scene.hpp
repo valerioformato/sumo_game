@@ -18,7 +18,7 @@ public:
   std::vector<DrawableEntity> drawableEntities() override;
 
 
-  [[nodiscard]] ftxui::ComponentDecorator EventHandler() { return m_player1Controller.event_handler; }
+  [[nodiscard]] ftxui::ComponentDecorator eventHandler() { return m_player1_controller.event_handler; }
 
   // TODO: remove later
   float last_tick{ 0 };
@@ -27,7 +27,7 @@ private:
   Sprite m_groundSprite{ Sprites::sand_tile };
 
   PlayableCharacter m_player1;
-  PlayerController m_player1Controller;
+  PlayerController m_player1_controller;
 };
 }// namespace Sumo::Game
 

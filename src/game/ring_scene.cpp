@@ -11,7 +11,7 @@ RingScene::RingScene()
   // test sprite: one white square :)
   // TODO: replace with real sprite
   m_player1 = PlayableCharacter{ Sprites::blu.frame(0) };
-  m_player1Controller = PlayerController{ .event_handler = ftxui::CatchEvent([this](const ftxui::Event &event) {
+  m_player1_controller = PlayerController{ .event_handler = ftxui::CatchEvent([this](const ftxui::Event &event) {
     bool handled = true;
     vec2f velocity{ 0, 0 };
 
@@ -35,14 +35,14 @@ RingScene::RingScene()
 
 void RingScene::update(const milliseconds dt)
 {
-  static constexpr float millisecondsToSeconds = 0.001F;
-  static constexpr float pSpeed = 3.0F;
+  static constexpr float milliseconds_to_seconds = 0.001F;
+  static constexpr float p_speed = 3.0F;
 
-  const auto tick = millisecondsToSeconds * static_cast<float>(dt.count());
+  const auto tick = milliseconds_to_seconds * static_cast<float>(dt.count());
 
   last_tick = tick;
 
-  m_player1.position += pSpeed * tick * m_player1.velocity;
+  m_player1.position += p_speed * tick * m_player1.velocity;
 }
 
 std::vector<GameScene::DrawableEntity> RingScene::drawableEntities()

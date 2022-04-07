@@ -12,7 +12,7 @@ GameEngine::GameEngine()
 
   // FIXME: ugly, but temporary
   auto *scene = dynamic_cast<Game::RingScene *>(m_scene.get());
-  m_main_component |= scene->EventHandler();
+  m_main_component |= scene->eventHandler();
 };
 
 GameEngine::~GameEngine()

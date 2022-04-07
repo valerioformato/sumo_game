@@ -4,7 +4,7 @@
 // dependencies headers
 #include <ftxui/component/component.hpp>// for Slider
 
-#include "utils/color.hpp"
+#include "utils/Color.hpp"
 
 namespace Sumo {
 
@@ -15,8 +15,8 @@ struct Bitmap final : ftxui::Node
     : m_width(width), m_height(height)
   {}
 
-  Color &at(const std::size_t idx) { return m_pixels.at(idx); }
-  Color &at(const std::size_t x, const std::size_t y) { return m_pixels.at(m_width * y + x); }
+  ColorI32 &at(const std::size_t idx) { return m_pixels.at(idx); }
+  ColorI32 &at(const std::size_t x, const std::size_t y) { return m_pixels.at(m_width * y + x); }
 
   void ComputeRequirement() override
   {
@@ -49,7 +49,7 @@ private:
   std::size_t m_width;
   std::size_t m_height;
 
-  std::vector<Color> m_pixels = std::vector<Color>(m_width * m_height, Color{});
+  std::vector<ColorI32> m_pixels = std::vector<ColorI32>(m_width * m_height, ColorI32{});
 };
 
 }// namespace Sumo
