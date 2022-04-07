@@ -47,7 +47,7 @@ void GameEngine::drawLoop()
     // NOTE: we have to use .count here because of this issue with msvc 19
     // see https://github.com/fmtlib/fmt/issues/2854
     m_renderer.display_debug_text(fmt::format(
-      "{} fps, frame time = {%4.2f}ms", static_cast<unsigned int>(1000.0 / dt.count()), dt.count()));// NOLINT magic numbers
+      "{} fps, frame time = {:4.2f}ms", static_cast<unsigned int>(1000.0 / dt.count()), dt.count()));// NOLINT magic numbers
 
     auto draw_end_time = std::chrono::steady_clock::now();
     auto draw_duration = std::chrono::duration_cast<milliseconds>(draw_end_time - drawTime);
