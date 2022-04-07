@@ -12,6 +12,8 @@ struct PlayableCharacter
   vec2f position{ 0, 0 };
   vec2f velocity{ 0, 0 };
   unsigned int animation_frame{ 0 };
+
+  float speed{ 15.0f };
 };
 }// namespace Sumo::Game
 

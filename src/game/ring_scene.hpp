@@ -1,6 +1,8 @@
 #ifndef SUMO_RINGSCENE_HPP
 #define SUMO_RINGSCENE_HPP
 
+#include <string_view>
+
 #include "engine/scene.hpp"
 #include "game/assets/sprites/sand_tile.hpp"
 #include "game/playable_character.hpp"
@@ -20,14 +22,15 @@ public:
 
   [[nodiscard]] ftxui::ComponentDecorator eventHandler() { return m_player1_controller.event_handler; }
 
-  // TODO: remove later
-  float last_tick{ 0 };
+  [[nodiscard]] std::string_view debugInfo() { return std::string_view{ m_debug_info }; }
 
 private:
   Sprite m_groundSprite{ Sprites::sand_tile };
 
   PlayableCharacter m_player1;
   PlayerController m_player1_controller;
+
+  std::string m_debug_info;
 };
 }// namespace Sumo::Game
 
