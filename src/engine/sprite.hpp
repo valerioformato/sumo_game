@@ -25,7 +25,7 @@ struct AnimatedSprite
   [[nodiscard]] Sprite frame(unsigned int iframe) const
   {
     return Sprite{ dimensions,
-                   std::span<const ColorI32>{ &data[iframe * dimensions.x * dimensions.y], dimensions.x * dimensions.y } };
+      std::span<const Color>{ &data[iframe * dimensions.x * dimensions.y], dimensions.x * dimensions.y } };
   }
 };
 

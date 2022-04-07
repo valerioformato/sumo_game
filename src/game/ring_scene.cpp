@@ -8,10 +8,13 @@ namespace Sumo::Game {
 
 RingScene::RingScene()
 {
-  // test sprite: one white square :)
-  // TODO: replace with real sprite
   m_player1 = PlayableCharacter{ Sprites::blu.frame(0) };
+<<<<<<< HEAD
   m_player1_controller = PlayerController{ .event_handler = ftxui::CatchEvent([this](const ftxui::Event &event) {
+=======
+  m_player1.position = vec2f{ 80.0F, 40.0F };// NOLINT magic numbers
+  m_player1Controller = PlayerController{ .event_handler = ftxui::CatchEvent([this](const ftxui::Event &event) {
+>>>>>>> 62e78ab2858a5e4867c051f6c06902d9cc7ae9a4
     bool handled = true;
     vec2f velocity{ 0, 0 };
 
@@ -38,7 +41,16 @@ void RingScene::update(const milliseconds dt)
   static constexpr float milliseconds_to_seconds = 0.001F;
   static constexpr float p_speed = 3.0F;
 
-  const auto tick = milliseconds_to_seconds * static_cast<float>(dt.count());
+  using namespace std::chrono_literals;
+  static constexpr milliseconds player_animation_frametime = 500.0ms;
+
+  static Clock player1_animation_timer;
+  if (player1_animation_timer.elapsedTime().count() > player_animation_frametime.count()) {
+    m_player1.sprite = Sprites::blu.frame(++m_player1.animation_frame % Sprites::blu.frames);
+    player1_animation_timer.restart();
+  }
+
+  const auto tick = millisecondsToSeconds * static_cast<float>(dt.count());
 
   last_tick = tick;
 
@@ -52,7 +64,6 @@ std::vector<GameScene::DrawableEntity> RingScene::drawableEntities()
   entities.emplace_back(std::make_tuple(m_groundSprite, vec2u{ 0U, 0U }, true));
 
   auto pos = static_cast<vec2u>(m_player1.position);
-  
   entities.emplace_back(std::make_tuple(m_player1.sprite, pos, false));
 
   return entities;
