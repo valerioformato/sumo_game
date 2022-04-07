@@ -30,6 +30,8 @@ private:
   PlayableCharacter m_player1;
   PlayerController m_player1_controller;
 
+  PlayableCharacter m_player2;
+
   std::string m_debug_info;
 };
 }// namespace Sumo::Game
