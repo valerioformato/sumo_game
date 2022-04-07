@@ -25,7 +25,10 @@ public:
 
   ftxui::Element end();
 
-  void display_debug_text(const std::string &text) { m_debug_element = ftxui::vbox({ m_debug_element, ftxui::text(text) }); }
+  void display_debug_text(const std::string &text)
+  {
+    m_debug_element = ftxui::vbox({ m_debug_element, ftxui::text(text) });
+  }
   void reset_debug_text() { m_debug_element = ftxui::vbox({}); };
 
 private:
