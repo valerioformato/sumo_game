@@ -17,12 +17,6 @@ template<std::integral T>
 struct ColorI
 {
   T r{}, g{}, b{}, a{std::numeric_limits<T>::max()};
-
-  template<std::floating_point U>
-  explicit operator ColorF<U>()
-  {
-
-  }
 };
 
 
@@ -42,7 +36,7 @@ template<std::floating_point T>
 
 template<std::floating_point T> [[nodiscard]] constexpr ColorF<T> operator+(const ColorF<T> &lhs, const ColorF<T> &rhs)
 {
-  return { lhs.r + rhs.r, lhs.g + rhs.g, lhs.b + rhs.r, clamp(lhs.a + rhs.a, T{0}, T{1}) };
+  return { lhs.r + rhs.r, lhs.g + rhs.g, lhs.b + rhs.b, clamp(lhs.a + rhs.a, T{0}, T{1}) };
 }
 
 template<std::floating_point T> [[nodiscard]] constexpr ColorF<T> operator-(const ColorF<T> &lhs, const ColorF<T> &rhs)
@@ -73,12 +67,13 @@ template<std::integral T> constexpr ColorI<T> alpha_blend(const ColorI<T> foregr
   if (foreground.a == 0 && background.a == 0)
       return foreground;
 
-  const auto bg_f = toFPColor<float>(background);
-  const auto fg_f = toFPColor<float>(foreground);
-  const auto alpha = fg_f.a + (1.f - fg_f.a) * bg_f.a;
-  const auto final_color = (fg_f * fg_f.a + bg_f * bg_f.a * (1.f - fg_f.a)) / alpha; 
+  const auto bgf = toFPColor<float>(background);
+  const auto fgf = toFPColor<float>(foreground);
+  const auto alpha = fgf.a + (1.f - fgf.a) * bgf.a;
+  const auto final_color = (fgf * fgf.a + bgf * bgf.a * (1.f - fgf.a)) / alpha; 
 
   return quantize<std::uint8_t>(final_color);
+  
 }
 
 }// namespace Sumo

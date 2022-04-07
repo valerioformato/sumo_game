@@ -6,7 +6,7 @@
 // dependencies headers
 #include <ftxui/component/component.hpp>// for Slider
 
-#include "utils/Color.hpp"
+#include "utils/color.hpp"
 
 namespace Sumo {
 
