@@ -9,12 +9,8 @@ namespace Sumo::Game {
 RingScene::RingScene()
 {
   m_player1 = PlayableCharacter{ Sprites::blu.frame(0) };
-<<<<<<< HEAD
-  m_player1_controller = PlayerController{ .event_handler = ftxui::CatchEvent([this](const ftxui::Event &event) {
-=======
   m_player1.position = vec2f{ 80.0F, 40.0F };// NOLINT magic numbers
-  m_player1Controller = PlayerController{ .event_handler = ftxui::CatchEvent([this](const ftxui::Event &event) {
->>>>>>> 62e78ab2858a5e4867c051f6c06902d9cc7ae9a4
+  m_player1_controller = PlayerController{ .event_handler = ftxui::CatchEvent([this](const ftxui::Event &event) {
     bool handled = true;
     vec2f velocity{ 0, 0 };
 
@@ -50,7 +46,7 @@ void RingScene::update(const milliseconds dt)
     player1_animation_timer.restart();
   }
 
-  const auto tick = millisecondsToSeconds * static_cast<float>(dt.count());
+  const auto tick = milliseconds_to_seconds * static_cast<float>(dt.count());
 
   last_tick = tick;
 
