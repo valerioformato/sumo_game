@@ -3,7 +3,10 @@
 #include <ftxui/component/component.hpp>
 #include <ftxui/component/event.hpp>
 
-#include "game/assets/sprites/blu.hpp"
+#include "game/assets/sprites/blu_front.hpp"
+#include "game/assets/sprites/blu_side.hpp"
+#include "game/assets/sprites/red_front.hpp"
+#include "game/assets/sprites/red_side.hpp"
 #include "game/ring_scene.hpp"
 
 namespace Sumo::Game {
@@ -16,8 +19,13 @@ bool isKeyArrowEvent(const ftxui::Event &event)
 
 RingScene::RingScene()
 {
-  m_player1 = PlayableCharacter{ Sprites::blu.frame(0) };
-  m_player1.position = vec2f{ 80.0F, 40.0F };// NOLINT magic numbers
+  m_player1 = PlayableCharacter{ Sprites::blu_side.frame(0) };
+  m_player1.position = vec2f{ 120.0F, 40.0F };// NOLINT magic numbers
+
+  m_player2 = PlayableCharacter{ Sprites::red_front.frame(0) };
+  m_player2.position = vec2f{ 60.0F, 30.0F };// NOLINT magic numbers
+
+
   m_player1_controller = PlayerController{};
   m_player1_controller.event_handler = ftxui::CatchEvent([this](const ftxui::Event &event) {
     using namespace std::chrono_literals;
@@ -71,8 +79,14 @@ void RingScene::update(const milliseconds dt)
 
   static Clock player1_animation_timer;
   if (player1_animation_timer.elapsedTime().count() > player_animation_frametime.count()) {
-    m_player1.sprite = Sprites::blu.frame(++m_player1.animation_frame % Sprites::blu.frames);
+    m_player1.sprite = Sprites::blu_side.frame(++m_player1.animation_frame % Sprites::blu_side.frames);
     player1_animation_timer.restart();
+  }
+
+  static Clock player2_animation_timer;
+  if (player2_animation_timer.elapsedTime().count() > player_animation_frametime.count()) {
+    m_player2.sprite = Sprites::red_front.frame(++m_player2.animation_frame % Sprites::red_front.frames);
+    player2_animation_timer.restart();
   }
 
   const auto tick = milliseconds_to_seconds * static_cast<float>(dt.count());
@@ -86,8 +100,8 @@ std::vector<GameScene::DrawableEntity> RingScene::drawableEntities()
 
   entities.emplace_back(std::make_tuple(m_groundSprite, vec2u{ 0U, 0U }, true));
 
-  auto pos = static_cast<vec2u>(m_player1.position);
-  entities.emplace_back(std::make_tuple(m_player1.sprite, pos, false));
+  entities.emplace_back(std::make_tuple(m_player1.sprite, static_cast<vec2u>(m_player1.position), false));
+  entities.emplace_back(std::make_tuple(m_player2.sprite, static_cast<vec2u>(m_player2.position), false));
 
   return entities;
 }
