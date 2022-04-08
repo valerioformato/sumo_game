@@ -9,10 +9,8 @@ def convert_sprite(filename, sprite_name):
 
     print(f"shape: {img.shape}, size: {img.size}")
     dimx, dimy, colors = img.shape[0], img.shape[1], img.shape[2]
-    frames = int(img.size / (img.shape[0] * img.shape[1]))
 
-    print(f"sprite has {frames} frames")
-
+    data = ""
     for line in img:
         for pixel in line:
             if colors == 3:
@@ -28,10 +26,10 @@ def convert_sprite(filename, sprite_name):
         "#include \"engine/sprite.hpp\"\n\n"
         "namespace Sumo::Sprites{\n"
         "// clang-format off\n"
-        f"    constexpr std::array<ColorI32, {dimx*dimy*frames}> {sprite_name}_data = {{ {data[:-2]} }};\n"
+        f"    constexpr std::array<ColorI32, {dimx*dimy}> {sprite_name}_data = {{ {data[:-2]} }};\n"
         "// clang-format on\n"
         "\n"
-        f"    constexpr Sprite {sprite_name}{{ {{ {dimx}U, {dimy}U }}, {sprite_name}_data }};"
+        f"    constexpr StaticSprite {sprite_name}{{ {{ {dimx}U, {dimy}U }}, {sprite_name}_data }};"
         "}\n"
         "#endif\n"
     )
@@ -64,7 +62,7 @@ def convert_sprite_gif(filename, sprite_name):
         "#include \"engine/sprite.hpp\"\n\n"
         "namespace Sumo::Sprites{\n"
         "// clang-format off\n"
-        f"    constexpr std::array<ColorI32, {dimx*dimy*colors*frames}> {sprite_name}_data = {{ {data[:-2]} }};\n"
+        f"    constexpr std::array<ColorI32, {dimx*dimy*frames}> {sprite_name}_data = {{ {data[:-2]} }};\n"
         "// clang-format on\n"
         "\n"
         f"    constexpr AnimatedSprite {sprite_name}{{ {{ {dimx}U, {dimy}U }}, {frames}U, {sprite_name}_data }};"

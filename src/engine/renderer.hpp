@@ -21,7 +21,7 @@ public:
 
   void begin(const ColorI32 &clear_color = ColorI32{});
 
-  void submit(Sprite sprite, vec2u screen_pos, bool tiled = false);
+  void submit(StaticSprite sprite, vec2u screen_pos, bool tiled = false);
 
   ftxui::Element end();
 
@@ -37,7 +37,7 @@ private:
   ftxui::Element m_buffer_element{ ftxui::vbox({ m_frame_buffer | ftxui::border, ftxui::text("") | ftxui::flex }) };
   ftxui::Element m_debug_element{ ftxui::vbox({}) };
 
-  void drawSpriteAt(Sprite sprite, vec2u screen_pos);
+  void drawSpriteAt(StaticSprite sprite, vec2u screen_pos);
 };
 
 }// namespace Sumo

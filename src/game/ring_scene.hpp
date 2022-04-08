@@ -4,7 +4,9 @@
 #include <string_view>
 
 #include "engine/scene.hpp"
+
 #include "game/assets/sprites/sand_tile.hpp"
+
 #include "game/playable_character.hpp"
 #include "game/player_controller.hpp"
 
@@ -25,14 +27,16 @@ public:
   [[nodiscard]] std::string_view debugInfo() { return std::string_view{ m_debug_info }; }
 
 private:
-  Sprite m_groundSprite{ Sprites::sand_tile };
+  StaticSprite m_groundSprite{ Sprites::sand_tile };
 
-  PlayableCharacter m_player1;
+  PlayableCharacter m_player1{ PlayerColor::Blue };
   PlayerController m_player1_controller;
 
-  PlayableCharacter m_player2;
+  PlayableCharacter m_player2{ PlayerColor::Red };
 
   std::string m_debug_info;
+
+  static void setFacingDirections(PlayableCharacter &p1, PlayableCharacter &p2);
 };
 }// namespace Sumo::Game
 

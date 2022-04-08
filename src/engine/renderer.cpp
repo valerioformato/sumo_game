@@ -14,7 +14,7 @@ void Renderer::begin(const ColorI32 &clear_color)
   std::fill(m_frame_buffer->data().begin(), m_frame_buffer->data().end(), clear_color);
 }
 
-void Renderer::drawSpriteAt(const Sprite sprite, vec2u screen_pos)
+void Renderer::drawSpriteAt(const StaticSprite sprite, vec2u screen_pos)
 {
   const auto &[tlx, tly] = screen_pos;
   const auto &[brx, bry] = screen_pos + sprite.dimensions;
@@ -28,7 +28,7 @@ void Renderer::drawSpriteAt(const Sprite sprite, vec2u screen_pos)
 }
 
 
-void Renderer::submit(const Sprite sprite, vec2u screen_pos, const bool tiled)
+void Renderer::submit(const StaticSprite sprite, vec2u screen_pos, const bool tiled)
 {
   auto g_lock = m_frame_buffer->lock();
   if (!tiled) {
