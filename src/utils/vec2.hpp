@@ -50,6 +50,16 @@ template<Numeric T> [[nodiscard]] vec2<T> constexpr operator*(T k, vec2<T> const
   return { rhs.x * k, rhs.y * k };
 }
 
+template<Numeric T> [[nodiscard]] vec2<T> constexpr operator/(vec2<T> const &lhs, T k)
+{
+  return { lhs.x / k, lhs.y / k };
+}
+
+template<Numeric T> [[nodiscard]] vec2<T> constexpr operator/(T k, vec2<T> const &rhs)
+{
+  return { rhs.x / k, rhs.y / k };
+}
+
 template<Numeric T> [[nodiscard]] vec2<T> constexpr operator+(vec2<T> const &lhs, vec2<T> const &rhs)
 {
   return { lhs.x + rhs.x, lhs.y + rhs.y };
