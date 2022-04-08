@@ -3,6 +3,7 @@
 #include <ftxui/component/component.hpp>
 #include <ftxui/component/event.hpp>
 
+#include "engine/engine.hpp"
 #include "game/ring_scene.hpp"
 
 namespace Sumo::Game {
@@ -103,6 +104,10 @@ std::vector<GameScene::DrawableEntity> RingScene::drawableEntities()
   std::vector<GameScene::DrawableEntity> entities;
 
   entities.emplace_back(m_groundSprite, vec2u{ 0U, 0U }, true);
+
+  static vec2u ringPosition = { (GameEngine::BUFFER_WIDTH - m_ringSprite.dimensions.x) / 2,
+    (GameEngine::BUFFER_HEIGHT - m_ringSprite.dimensions.y) / 2 };
+  entities.emplace_back(m_ringSprite, ringPosition, false);
 
   entities.emplace_back(m_player1.currentSprite(), static_cast<vec2u>(m_player1.position), false);
   entities.emplace_back(m_player2.currentSprite(), static_cast<vec2u>(m_player2.position), false);

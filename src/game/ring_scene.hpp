@@ -5,6 +5,7 @@
 
 #include "engine/scene.hpp"
 
+#include "game/assets/sprites/ring.hpp"
 #include "game/assets/sprites/sand_tile.hpp"
 
 #include "game/playable_character.hpp"
@@ -28,6 +29,7 @@ public:
 
 private:
   StaticSprite m_groundSprite{ Sprites::sand_tile };
+  StaticSprite m_ringSprite{ Sprites::ring };
 
   PlayableCharacter m_player1{ PlayerColor::Blue };
   PlayerController m_player1_controller;
