@@ -50,7 +50,8 @@ template<Sprite T, size_t N> constexpr auto flipSpriteData(T sprite)
     for (unsigned int iy = 0U; iy < sprite.dimensions.y; ++iy) {
       for (unsigned int ix = 0U; ix < sprite.dimensions.x; ++ix) {
         new_data[iframe * (sprite.dimensions.x * sprite.dimensions.y) + (sprite.dimensions.x - ix - 1)
-                 + sprite.dimensions.x * iy] = sprite.data[ix + sprite.dimensions.x * iy];
+                 + sprite.dimensions.x * iy] =
+          sprite.data[iframe * (sprite.dimensions.x * sprite.dimensions.y) + ix + sprite.dimensions.x * iy];
       }
     }
   }
