@@ -18,6 +18,9 @@ class RingScene : public GameScene
 public:
   explicit RingScene();
 
+  enum class Result { None, Win, Loss };
+  Result result{ Result::None };
+
   void draw(Bitmap &screen_buffer);
   void update(milliseconds dt) override;
   std::vector<DrawableEntity> drawableEntities() override;
@@ -37,6 +40,11 @@ private:
   PlayableCharacter m_player2{ PlayerColor::Red };
 
   std::string m_debug_info;
+
+  static constexpr vec2f p1_starting_pos{ 120.0F, 50.0F };
+  static constexpr vec2f p2_starting_pos{ 60.0F, 50.0F };
+
+  void reset();
 
   // returns the vector between the two player positions
   [[nodiscard]] static vec2f setFacingDirections(PlayableCharacter &p1, PlayableCharacter &p2);
