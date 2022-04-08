@@ -102,10 +102,15 @@ std::vector<GameScene::DrawableEntity> RingScene::drawableEntities()
 {
   std::vector<GameScene::DrawableEntity> entities;
 
-  entities.emplace_back(std::make_tuple(m_groundSprite, vec2u{ 0U, 0U }, true));
+  entities.emplace_back(m_groundSprite, vec2u{ 0U, 0U }, true);
 
-  entities.emplace_back(std::make_tuple(m_player1.currentSprite(), static_cast<vec2u>(m_player1.position), false));
-  entities.emplace_back(std::make_tuple(m_player2.currentSprite(), static_cast<vec2u>(m_player2.position), false));
+  entities.emplace_back(m_player1.currentSprite(), static_cast<vec2u>(m_player1.position), false);
+  entities.emplace_back(m_player2.currentSprite(), static_cast<vec2u>(m_player2.position), false);
+
+  // terrible hack for z-ordering
+  if (m_player1.position.y > m_player2.position.y) {
+    std::swap(entities[entities.size() - 2], entities[entities.size() - 1]);
+  }
 
   return entities;
 }
