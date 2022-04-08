@@ -15,6 +15,14 @@ namespace Sumo::Game {
 enum class PlayerColor { Red, Blue };
 enum class PlayerFacingDirection { Up, Down, Left, Right };
 
+using namespace std::literals;
+inline std::map<PlayerFacingDirection, std::string_view> direction_debug_name{
+  { PlayerFacingDirection::Up, "up"sv },
+  { PlayerFacingDirection::Down, "down"sv },
+  { PlayerFacingDirection::Left, "left"sv },
+  { PlayerFacingDirection::Right, "right"sv },
+};
+
 using AnimationMap = std::map<PlayerFacingDirection, AnimatedSprite>;
 }// namespace Sumo::Game
 
@@ -52,16 +60,22 @@ public:
 
   float speed{ 15.0f };
 
+  PlayerFacingDirection facing_direction{ PlayerFacingDirection::Down };
+
   void updateAnimation();
   [[nodiscard]] StaticSprite currentSprite() const { return m_current_sprite.frame(m_animation_frame); }
 
+  // TODO: remove later
+  [[nodiscard]] unsigned int currentAnimationFrame() const { return m_animation_frame; }
+
 private:
   PlayerColor m_color{ PlayerColor::Blue };
+  PlayerFacingDirection m_last_facing_direction{ facing_direction };
   AnimationMap m_animations = m_color == PlayerColor::Blue ? Sprites::blu_animations : Sprites::red_animations;
 
   Clock m_animation_timer{};
   unsigned int m_animation_frame{ 0 };
-  AnimatedSprite m_current_sprite = m_animations[PlayerFacingDirection::Down];
+  AnimatedSprite m_current_sprite = m_animations[facing_direction];
 
   static constexpr milliseconds animation_frametime = 500.0ms;
 };

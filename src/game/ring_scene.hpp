@@ -35,6 +35,8 @@ private:
   PlayableCharacter m_player2{ PlayerColor::Red };
 
   std::string m_debug_info;
+
+  static void setFacingDirections(PlayableCharacter &p1, PlayableCharacter &p2);
 };
 }// namespace Sumo::Game
 

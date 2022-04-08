@@ -57,7 +57,7 @@ RingScene::RingScene()
       m_player1.velocity = m_player1.speed * vec2f{ 1, 0 };
     }
 
-    m_debug_info = fmt::format("{} {}ms ago", isKeyArrowEvent(event) ? "key" : "custom", dt.count());
+    // m_debug_info = fmt::format("{} {}ms ago", isKeyArrowEvent(event) ? "key" : "custom", dt.count());
 
     return handled;
   });
@@ -67,8 +67,14 @@ void RingScene::update(const milliseconds dt)
 {
   static constexpr float milliseconds_to_seconds = 0.001F;
 
+  setFacingDirections(m_player1, m_player2);
+
   m_player1.updateAnimation();
   m_player2.updateAnimation();
+
+  m_debug_info = fmt::format("p1 facing {}, p2 facing {}",
+    direction_debug_name[m_player1.facing_direction],
+    direction_debug_name[m_player2.facing_direction]);
 
   const auto tick = milliseconds_to_seconds * static_cast<float>(dt.count());
 
@@ -85,6 +91,33 @@ std::vector<GameScene::DrawableEntity> RingScene::drawableEntities()
   entities.emplace_back(std::make_tuple(m_player2.currentSprite(), static_cast<vec2u>(m_player2.position), false));
 
   return entities;
+}
+
+
+void RingScene::setFacingDirections(PlayableCharacter &p1, PlayableCharacter &p2)
+{
+  vec2f direction = p2.position - p1.position;
+
+  // FIXME: this is kida ugly. But optimization day will always be tomorrow
+  if (std::fabs(direction.x) > std::fabs(direction.y)) {
+    // left or right
+    if (direction.x > 0.0F) {
+      p1.facing_direction = PlayerFacingDirection::Right;
+      p2.facing_direction = PlayerFacingDirection::Left;
+    } else {
+      p1.facing_direction = PlayerFacingDirection::Left;
+      p2.facing_direction = PlayerFacingDirection::Right;
+    }
+  } else {
+    // remember: y > 0 points downwards in screen space!!!
+    if (direction.y < 0.0F) {
+      p1.facing_direction = PlayerFacingDirection::Up;
+      p2.facing_direction = PlayerFacingDirection::Down;
+    } else {
+      p1.facing_direction = PlayerFacingDirection::Down;
+      p2.facing_direction = PlayerFacingDirection::Up;
+    }
+  }
 }
 
 
