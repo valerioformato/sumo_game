@@ -16,9 +16,11 @@ bool isKeyArrowEvent(const ftxui::Event &event)
 
 RingScene::RingScene()
 {
-  m_player1.position = vec2f{ 120.0F, 40.0F };// NOLINT magic numbers
-  m_player2.position = vec2f{ 60.0F, 30.0F };// NOLINT magic numbers
+  m_player1.position = vec2f{ 120.0F, 50.0F };// NOLINT magic numbers
+  m_player2.position = vec2f{ 60.0F, 50.0F };// NOLINT magic numbers
 
+  // let's allow player1 to be slightly faster?
+  m_player2.speed = 0.8F * m_player1.speed;// NOLINT magic numbers
 
   m_player1_controller = PlayerController{};
   m_player1_controller.event_handler = ftxui::CatchEvent([this](const ftxui::Event &event) {
@@ -68,7 +70,8 @@ void RingScene::update(const milliseconds dt)
 {
   static constexpr float milliseconds_to_seconds = 0.001F;
 
-  setFacingDirections(m_player1, m_player2);
+  vec2f direction = setFacingDirections(m_player1, m_player2);
+  m_player2.velocity = -1.0F * m_player2.speed * normalize(direction);
 
   m_player1.updateAnimation();
   m_player2.updateAnimation();
@@ -109,8 +112,11 @@ std::vector<GameScene::DrawableEntity> RingScene::drawableEntities()
     (GameEngine::BUFFER_HEIGHT - m_ringSprite.dimensions.y) / 2 };
   entities.emplace_back(m_ringSprite, ringPosition, false);
 
-  entities.emplace_back(m_player1.currentSprite(), static_cast<vec2u>(m_player1.position), false);
-  entities.emplace_back(m_player2.currentSprite(), static_cast<vec2u>(m_player2.position), false);
+  vec2u sprite1_offset = m_player1.currentSprite().dimensions / 2U;
+  vec2u sprite2_offset = m_player2.currentSprite().dimensions / 2U;
+
+  entities.emplace_back(m_player1.currentSprite(), static_cast<vec2u>(m_player1.position) - sprite1_offset, false);
+  entities.emplace_back(m_player2.currentSprite(), static_cast<vec2u>(m_player2.position) - sprite2_offset, false);
 
   // terrible hack for z-ordering
   if (m_player1.position.y > m_player2.position.y) {
@@ -121,7 +127,7 @@ std::vector<GameScene::DrawableEntity> RingScene::drawableEntities()
 }
 
 
-void RingScene::setFacingDirections(PlayableCharacter &p1, PlayableCharacter &p2)
+vec2f RingScene::setFacingDirections(PlayableCharacter &p1, PlayableCharacter &p2)
 {
   vec2f direction = p2.position - p1.position;
 
@@ -145,6 +151,8 @@ void RingScene::setFacingDirections(PlayableCharacter &p1, PlayableCharacter &p2
       p2.facing_direction = PlayerFacingDirection::Up;
     }
   }
+
+  return direction;
 }
 
 

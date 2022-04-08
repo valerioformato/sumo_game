@@ -38,7 +38,8 @@ private:
 
   std::string m_debug_info;
 
-  static void setFacingDirections(PlayableCharacter &p1, PlayableCharacter &p2);
+  // returns the vector between the two player positions
+  [[nodiscard]] static vec2f setFacingDirections(PlayableCharacter &p1, PlayableCharacter &p2);
 };
 }// namespace Sumo::Game
 
