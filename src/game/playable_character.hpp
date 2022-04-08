@@ -4,6 +4,7 @@
 #include <map>
 
 #include "engine/sprite.hpp"
+#include "game/collider.hpp"
 #include "utils/clock.hpp"
 
 #include "game/assets/sprites/blu_front.hpp"
@@ -62,6 +63,8 @@ public:
 
   PlayerFacingDirection facing_direction{ PlayerFacingDirection::Down };
 
+  void updatePosition(float tick);
+
   void updateAnimation();
   [[nodiscard]] StaticSprite currentSprite() const { return m_current_sprite.frame(m_animation_frame); }
 
@@ -78,7 +81,13 @@ private:
   AnimatedSprite m_current_sprite = m_animations[facing_direction];
 
   static constexpr milliseconds animation_frametime = 500.0ms;
+
+public:
+  CircleCollider collider{ position,
+    0.7F * static_cast<float>(std::max(m_current_sprite.dimensions.x, m_current_sprite.dimensions.y))
+      / 2.0F };// NOLINT magic numbers
 };
+
 }// namespace Sumo::Game
 
 #endif

@@ -78,7 +78,24 @@ void RingScene::update(const milliseconds dt)
 
   const auto tick = milliseconds_to_seconds * static_cast<float>(dt.count());
 
-  m_player1.position += tick * m_player1.velocity;
+  auto playersWillCollide = [this](float increment) {
+    auto p1_test_collider = m_player1.collider;
+    auto p2_test_collider = m_player2.collider;
+
+    p1_test_collider.position = m_player1.position + increment * m_player1.velocity;
+    p2_test_collider.position = m_player2.position + increment * m_player2.velocity;
+
+    return p1_test_collider.collision(p2_test_collider);
+  };
+
+  if (!playersWillCollide(tick)) {
+    m_player1.updatePosition(tick);
+    m_player2.updatePosition(tick);
+  } else {
+    m_debug_info += " Collision!";
+    m_player1.velocity = { 0, 0 };
+    m_player2.velocity = { 0, 0 };
+  }
 }
 
 std::vector<GameScene::DrawableEntity> RingScene::drawableEntities()
