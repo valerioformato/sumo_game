@@ -30,7 +30,6 @@ void Renderer::drawSpriteAt(const StaticSprite sprite, vec2u screen_pos)
 
 void Renderer::submit(const StaticSprite sprite, vec2u screen_pos, const bool tiled)
 {
-  auto g_lock = m_frame_buffer->lock();
   if (!tiled) {
     drawSpriteAt(sprite, screen_pos);
   } else {

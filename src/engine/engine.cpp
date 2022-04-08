@@ -38,7 +38,10 @@ void GameEngine::drawLoop()
     auto dt = std::chrono::duration_cast<milliseconds>(drawTime - last_frame);
     last_frame = std::chrono::steady_clock::now();
 
-    for (auto [sprite, position, tiled] : m_scene->drawableEntities()) { m_renderer.submit(sprite, position, tiled); }
+    {
+      auto g_lock = m_renderer.lock_buffer();
+      for (auto [sprite, position, tiled] : m_scene->drawableEntities()) { m_renderer.submit(sprite, position, tiled); }
+    }
 
     // NOTE: we have to use .count here because of this issue with msvc 19
     // see https://github.com/fmtlib/fmt/issues/2854
