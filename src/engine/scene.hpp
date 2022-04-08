@@ -3,6 +3,7 @@
 
 // c++ headers
 #include <chrono>
+#include <mutex>
 
 // project headers
 #include "engine/sprite.hpp"

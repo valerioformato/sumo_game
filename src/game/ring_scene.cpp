@@ -1,3 +1,5 @@
+#include <fmt/chrono.h>
+#include <fmt/format.h>
 #include <ftxui/component/component.hpp>
 #include <ftxui/component/event.hpp>
 
@@ -6,36 +8,63 @@
 
 namespace Sumo::Game {
 
+bool isKeyArrowEvent(const ftxui::Event &event)
+{
+  return (event == ftxui::Event::ArrowLeft || event == ftxui::Event::ArrowRight || event == ftxui::Event::ArrowUp
+          || event == ftxui::Event::ArrowDown);
+}
+
 RingScene::RingScene()
 {
   m_player1 = PlayableCharacter{ Sprites::blu.frame(0) };
   m_player1.position = vec2f{ 80.0F, 40.0F };// NOLINT magic numbers
-  m_player1_controller = PlayerController{ .event_handler = ftxui::CatchEvent([this](const ftxui::Event &event) {
+  m_player1_controller = PlayerController{};
+  m_player1_controller.event_handler = ftxui::CatchEvent([this](const ftxui::Event &event) {
+    using namespace std::chrono_literals;
+    static constexpr milliseconds keyboard_timeout = 300.0ms;
     bool handled = true;
-    vec2f velocity{ 0, 0 };
 
-    if (event == ftxui::Event::ArrowUp) {
-      velocity += { 0, -1 };
-    } else if (event == ftxui::Event::ArrowDown) {
-      velocity += { 0, 1 };
-    } else if (event == ftxui::Event::ArrowLeft) {
-      velocity += { -1, 0 };
-    } else if (event == ftxui::Event::ArrowRight) {
-      velocity += { 1, 0 };
-    } else {
+    std::chrono::steady_clock::time_point event_time = std::chrono::steady_clock::now();
+
+    auto dt = std::chrono::duration_cast<milliseconds>(event_time - m_player1_controller.last_event.key_time);
+
+    if (isKeyArrowEvent(m_player1_controller.last_event.event) && !isKeyArrowEvent(event)) { return false; }
+
+    if (!isKeyArrowEvent(m_player1_controller.last_event.event) && !isKeyArrowEvent(event)
+        && dt.count() > keyboard_timeout.count()) {
+      m_player1.velocity = { 0, 0 };
       handled = false;
     }
 
-    m_player1.velocity = velocity;
+    m_player1_controller.last_event.key_event = event;
+
+    if (event == ftxui::Event::ArrowUp) {
+      m_player1_controller.last_event.key_event = event;
+      m_player1_controller.last_event.key_time = event_time;
+      m_player1.velocity = m_player1.speed * vec2f{ 0, -1 };
+    } else if (event == ftxui::Event::ArrowDown) {
+      m_player1_controller.last_event.key_event = event;
+      m_player1_controller.last_event.key_time = event_time;
+      m_player1.velocity = m_player1.speed * vec2f{ 0, 1 };
+    } else if (event == ftxui::Event::ArrowLeft) {
+      m_player1_controller.last_event.key_event = event;
+      m_player1_controller.last_event.key_time = event_time;
+      m_player1.velocity = m_player1.speed * vec2f{ -1, 0 };
+    } else if (event == ftxui::Event::ArrowRight) {
+      m_player1_controller.last_event.key_event = event;
+      m_player1_controller.last_event.key_time = event_time;
+      m_player1.velocity = m_player1.speed * vec2f{ 1, 0 };
+    }
+
+    m_debug_info = fmt::format("{} {}ms ago", isKeyArrowEvent(event) ? "key" : "custom", dt.count());
 
     return handled;
-  }) };
+  });
 }
 
 void RingScene::update(const milliseconds dt)
 {
   static constexpr float milliseconds_to_seconds = 0.001F;
-  static constexpr float p_speed = 3.0F;
 
   using namespace std::chrono_literals;
   static constexpr milliseconds player_animation_frametime = 500.0ms;
@@ -48,9 +77,7 @@ void RingScene::update(const milliseconds dt)
 
   const auto tick = milliseconds_to_seconds * static_cast<float>(dt.count());
 
-  last_tick = tick;
-
-  m_player1.position += p_speed * tick * m_player1.velocity;
+  m_player1.position += tick * m_player1.velocity;
 }
 
 std::vector<GameScene::DrawableEntity> RingScene::drawableEntities()

@@ -14,6 +14,15 @@ namespace Sumo::Game {
 struct PlayerController
 {
   ftxui::ComponentDecorator event_handler;
+
+  struct State
+  {
+    ftxui::Event event;
+    ftxui::Event key_event;
+    std::chrono::steady_clock::time_point key_time{ std::chrono::steady_clock::now() };
+  };
+
+  State last_event;
 };
 }// namespace Sumo::Game
 

@@ -33,8 +33,6 @@ void GameEngine::drawLoop()
 
   while (!m_stop_game_loop) {
     static auto last_frame = std::chrono::steady_clock::now();
-    m_renderer.reset_debug_text();
-
 
     auto drawTime = std::chrono::steady_clock::now();
     auto dt = std::chrono::duration_cast<milliseconds>(drawTime - last_frame);
@@ -42,13 +40,17 @@ void GameEngine::drawLoop()
 
     for (auto [sprite, position, tiled] : m_scene->drawableEntities()) { m_renderer.submit(sprite, position, tiled); }
 
-    m_renderer.display_debug_text(std::to_string(frame_counter));
-
     // NOTE: we have to use .count here because of this issue with msvc 19
     // see https://github.com/fmtlib/fmt/issues/2854
-    m_renderer.display_debug_text(fmt::format(
-      "{} fps, frame time = {:4.2f}ms", static_cast<unsigned int>(1000.0 / dt.count()), dt.count()));// NOLINT magic numbers
-
+    static constexpr double milliseconds_to_seconds = 1000.0;
+    // this happens too fast, let's slow it down by 5x
+    if ((frame_counter % 5) == 0U) {// NOLINT magic numbers
+      m_renderer.reset_debug_text();
+      m_renderer.display_debug_text(std::to_string(frame_counter));
+      m_renderer.display_debug_text(fmt::format(
+        "{} fps, frame time = {:4.2f}ms", static_cast<unsigned int>(milliseconds_to_seconds / dt.count()), dt.count()));
+      // m_renderer.display_debug_text(std::string{ dynamic_cast<Game::RingScene *>(m_scene.get())->debugInfo() });
+    }
     auto draw_end_time = std::chrono::steady_clock::now();
     auto draw_duration = std::chrono::duration_cast<milliseconds>(draw_end_time - drawTime);
 
@@ -79,5 +81,5 @@ void GameEngine::tick()
 
     m_screen.PostEvent(ftxui::Event::Custom);
   }
-};
+}
 }// namespace Sumo
