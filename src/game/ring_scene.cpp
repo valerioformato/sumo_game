@@ -16,8 +16,8 @@ bool isKeyArrowEvent(const ftxui::Event &event)
 
 RingScene::RingScene()
 {
-  m_player1.position = vec2f{ 120.0F, 50.0F };// NOLINT magic numbers
-  m_player2.position = vec2f{ 60.0F, 50.0F };// NOLINT magic numbers
+  m_player1.position = p1_starting_pos;
+  m_player2.position = p2_starting_pos;
 
   // let's allow player1 to be slightly faster?
   m_player2.speed = 0.8F * m_player1.speed;// NOLINT magic numbers
@@ -69,6 +69,15 @@ RingScene::RingScene()
 void RingScene::update(const milliseconds dt)
 {
   static constexpr float milliseconds_to_seconds = 0.001F;
+  static constexpr float ring_radius = 0.5F * Sprites::ring.dimensions.x;
+  static constexpr auto screen_center =
+    static_cast<vec2f>(vec2u{ GameEngine::BUFFER_WIDTH / 2, GameEngine::BUFFER_HEIGHT / 2 });
+
+  if (distance(m_player1.position, screen_center) > ring_radius) {
+    result = Result::Loss;
+  } else if (distance(m_player2.position, screen_center) > ring_radius) {
+    result = Result::Win;
+  }
 
   vec2f direction = setFacingDirections(m_player1, m_player2);
   m_player2.velocity = -1.0F * m_player2.speed * normalize(direction);
@@ -76,9 +85,22 @@ void RingScene::update(const milliseconds dt)
   m_player1.updateAnimation();
   m_player2.updateAnimation();
 
-  m_debug_info = fmt::format("p1 facing {}, p2 facing {}",
-    direction_debug_name[m_player1.facing_direction],
-    direction_debug_name[m_player2.facing_direction]);
+  std::string tmp_result{};
+  switch (result) {
+  case Result::Win:
+    tmp_result = "WIN! ";
+    reset();
+    break;
+  case Result::Loss:
+    tmp_result = "LOSE! ";
+    reset();
+    break;
+  case Result::None:
+    break;
+  }
+
+  m_debug_info = fmt::format(
+    "{} {} {}", tmp_result, distance(m_player1.position, screen_center), distance(m_player2.position, screen_center));
 
   const auto tick = milliseconds_to_seconds * static_cast<float>(dt.count());
 
@@ -126,6 +148,16 @@ std::vector<GameScene::DrawableEntity> RingScene::drawableEntities()
   return entities;
 }
 
+void RingScene::reset()
+{
+  m_player1.position = p1_starting_pos;
+  m_player2.position = p2_starting_pos;
+
+  m_player1.velocity = vec2f{ 0.0F, 0.0F };
+  m_player2.velocity = vec2f{ 0.0F, 0.0F };
+
+  result = Result::None;
+}
 
 vec2f RingScene::setFacingDirections(PlayableCharacter &p1, PlayableCharacter &p2)
 {
