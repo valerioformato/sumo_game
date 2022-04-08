@@ -3,10 +3,6 @@
 #include <ftxui/component/component.hpp>
 #include <ftxui/component/event.hpp>
 
-#include "game/assets/sprites/blu_front.hpp"
-#include "game/assets/sprites/blu_side.hpp"
-#include "game/assets/sprites/red_front.hpp"
-#include "game/assets/sprites/red_side.hpp"
 #include "game/ring_scene.hpp"
 
 namespace Sumo::Game {
@@ -19,10 +15,7 @@ bool isKeyArrowEvent(const ftxui::Event &event)
 
 RingScene::RingScene()
 {
-  m_player1 = PlayableCharacter{ Sprites::blu_side.frame(0) };
   m_player1.position = vec2f{ 120.0F, 40.0F };// NOLINT magic numbers
-
-  m_player2 = PlayableCharacter{ Sprites::red_front.frame(0) };
   m_player2.position = vec2f{ 60.0F, 30.0F };// NOLINT magic numbers
 
 
@@ -74,20 +67,8 @@ void RingScene::update(const milliseconds dt)
 {
   static constexpr float milliseconds_to_seconds = 0.001F;
 
-  using namespace std::chrono_literals;
-  static constexpr milliseconds player_animation_frametime = 500.0ms;
-
-  static Clock player1_animation_timer;
-  if (player1_animation_timer.elapsedTime().count() > player_animation_frametime.count()) {
-    m_player1.sprite = Sprites::blu_side.frame(++m_player1.animation_frame % Sprites::blu_side.frames);
-    player1_animation_timer.restart();
-  }
-
-  static Clock player2_animation_timer;
-  if (player2_animation_timer.elapsedTime().count() > player_animation_frametime.count()) {
-    m_player2.sprite = Sprites::red_front.frame(++m_player2.animation_frame % Sprites::red_front.frames);
-    player2_animation_timer.restart();
-  }
+  m_player1.updateAnimation();
+  m_player2.updateAnimation();
 
   const auto tick = milliseconds_to_seconds * static_cast<float>(dt.count());
 
@@ -100,8 +81,8 @@ std::vector<GameScene::DrawableEntity> RingScene::drawableEntities()
 
   entities.emplace_back(std::make_tuple(m_groundSprite, vec2u{ 0U, 0U }, true));
 
-  entities.emplace_back(std::make_tuple(m_player1.sprite, static_cast<vec2u>(m_player1.position), false));
-  entities.emplace_back(std::make_tuple(m_player2.sprite, static_cast<vec2u>(m_player2.position), false));
+  entities.emplace_back(std::make_tuple(m_player1.currentSprite(), static_cast<vec2u>(m_player1.position), false));
+  entities.emplace_back(std::make_tuple(m_player2.currentSprite(), static_cast<vec2u>(m_player2.position), false));
 
   return entities;
 }
