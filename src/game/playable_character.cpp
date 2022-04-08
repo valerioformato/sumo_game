@@ -17,4 +17,10 @@ void PlayableCharacter::updateAnimation()
     m_animation_timer.restart();
   }
 }
+
+void PlayableCharacter::updatePosition(float tick)
+{
+  vec2f new_position = position + tick * velocity;
+  position = collider.position = new_position;
+}
 }// namespace Sumo::Game
