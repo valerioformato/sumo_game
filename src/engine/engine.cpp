@@ -75,7 +75,7 @@ void GameEngine::tick()
     static auto last_tick = std::chrono::steady_clock::now();
 
     using namespace std::chrono_literals;
-    std::this_thread::sleep_for(1.0s / 30.0);// NOLINT magic numbers
+    std::this_thread::sleep_for(1.0s / 120.0);// NOLINT magic numbers
 
     auto update_time = std::chrono::steady_clock::now();
 

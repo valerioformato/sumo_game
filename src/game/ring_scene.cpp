@@ -214,13 +214,14 @@ void RingScene::playerPushBack(PlayableCharacter &pushing_player, PlayableCharac
 {
   vec2f direction = pushed_player.position - pushing_player.position;
 
+  static constexpr float pushback_velocity = 30.0F;
+  static constexpr float constant_push_speed = 5.0F;
+
   switch (style) {
   case PushBackStyle::Impulse:
-    static constexpr float pushback_velocity = 30.0F;
     pushed_player.beginPushBack(pushback_velocity * normalize(direction));
     break;
   case PushBackStyle::Constant:
-    static constexpr float constant_push_speed = 5.0F;
     pushing_player.velocity = pushed_player.velocity = constant_push_speed * normalize(direction);
     break;
   }
