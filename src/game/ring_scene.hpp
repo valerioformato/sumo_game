@@ -28,7 +28,7 @@ public:
 
   [[nodiscard]] ftxui::ComponentDecorator eventHandler() { return m_player1_controller.event_handler; }
 
-  [[nodiscard]] std::string_view debugInfo() { return std::string_view{ m_debug_info }; }
+  [[nodiscard]] const std::vector<std::string> &debugInfo() { return m_debug_info; }
 
 private:
   StaticSprite m_groundSprite{ Sprites::sand_tile };
@@ -39,7 +39,12 @@ private:
 
   PlayableCharacter m_player2{ PlayerColor::Red };
 
-  std::string m_debug_info;
+  std::vector<std::string> m_debug_info{};
+
+  enum class PlayerState { Free, Locked };
+  PlayerState m_players_state{ PlayerState::Free };
+
+  enum class PushBackStyle { Impulse, Constant };
 
   static constexpr vec2f p1_starting_pos{ 120.0F, 50.0F };
   static constexpr vec2f p2_starting_pos{ 60.0F, 50.0F };
@@ -48,6 +53,8 @@ private:
 
   // returns the vector between the two player positions
   [[nodiscard]] static vec2f setFacingDirections(PlayableCharacter &p1, PlayableCharacter &p2);
+
+  static void playerPushBack(PlayableCharacter &pushing_player, PlayableCharacter &pushed_player, PushBackStyle style);
 };
 }// namespace Sumo::Game
 

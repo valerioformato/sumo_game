@@ -26,41 +26,53 @@ RingScene::RingScene()
   m_player1_controller.event_handler = ftxui::CatchEvent([this](const ftxui::Event &event) {
     using namespace std::chrono_literals;
     static constexpr milliseconds keyboard_timeout = 300.0ms;
-    bool handled = true;
 
     std::chrono::steady_clock::time_point event_time = std::chrono::steady_clock::now();
 
     auto dt = std::chrono::duration_cast<milliseconds>(event_time - m_player1_controller.last_event.key_time);
 
-    if (isKeyArrowEvent(m_player1_controller.last_event.event) && !isKeyArrowEvent(event)) { return false; }
+    if (m_players_state == PlayerState::Locked && event == ftxui::Event::Character(' ')) {
+      m_debug_info.emplace_back("Spacebar pressed :)");
+      playerPushBack(m_player1, m_player2, PushBackStyle::Impulse);
+      return true;
+    }
 
-    if (!isKeyArrowEvent(m_player1_controller.last_event.event) && !isKeyArrowEvent(event)
-        && dt.count() > keyboard_timeout.count()) {
-      m_player1.velocity = { 0, 0 };
-      handled = false;
+    if (!isKeyArrowEvent(event)) {
+      if (isKeyArrowEvent(m_player1_controller.last_event.event)) {
+        return false;
+      } else {
+        if (dt.count() > keyboard_timeout.count()) {
+          m_player1.velocity = { 0, 0 };
+          return false;
+        }
+      }
     }
 
     m_player1_controller.last_event.key_event = event;
+
+    bool handled = false;
 
     if (event == ftxui::Event::ArrowUp) {
       m_player1_controller.last_event.key_event = event;
       m_player1_controller.last_event.key_time = event_time;
       m_player1.velocity = m_player1.speed * vec2f{ 0, -1 };
+      handled = true;
     } else if (event == ftxui::Event::ArrowDown) {
       m_player1_controller.last_event.key_event = event;
       m_player1_controller.last_event.key_time = event_time;
       m_player1.velocity = m_player1.speed * vec2f{ 0, 1 };
+      handled = true;
     } else if (event == ftxui::Event::ArrowLeft) {
       m_player1_controller.last_event.key_event = event;
       m_player1_controller.last_event.key_time = event_time;
       m_player1.velocity = m_player1.speed * vec2f{ -1, 0 };
+      handled = true;
     } else if (event == ftxui::Event::ArrowRight) {
       m_player1_controller.last_event.key_event = event;
       m_player1_controller.last_event.key_time = event_time;
       m_player1.velocity = m_player1.speed * vec2f{ 1, 0 };
+      handled = true;
     }
-
-    // m_debug_info = fmt::format("{} {}ms ago", isKeyArrowEvent(event) ? "key" : "custom", dt.count());
 
     return handled;
   });
@@ -99,8 +111,9 @@ void RingScene::update(const milliseconds dt)
     break;
   }
 
-  m_debug_info = fmt::format(
-    "{} {} {}", tmp_result, distance(m_player1.position, screen_center), distance(m_player2.position, screen_center));
+  m_debug_info.clear();
+  m_debug_info.push_back(fmt::format(
+    "{} {} {}", tmp_result, distance(m_player1.position, screen_center), distance(m_player2.position, screen_center)));
 
   const auto tick = milliseconds_to_seconds * static_cast<float>(dt.count());
 
@@ -115,13 +128,20 @@ void RingScene::update(const milliseconds dt)
   };
 
   if (!playersWillCollide(tick)) {
-    m_player1.updatePosition(tick);
-    m_player2.updatePosition(tick);
+    m_players_state = PlayerState::Free;
   } else {
-    m_debug_info += " Collision!";
+    m_debug_info.emplace_back("Players locked!");
+    m_players_state = PlayerState::Locked;
     m_player1.velocity = { 0, 0 };
     m_player2.velocity = { 0, 0 };
+    playerPushBack(m_player2, m_player1, PushBackStyle::Constant);
   }
+
+  m_player1.updatePosition(tick);
+  m_player2.updatePosition(tick);
+
+  m_debug_info.push_back(fmt::format("P1 velocity: ({} {})", m_player1.velocity.x, m_player1.velocity.y));
+  m_debug_info.push_back(fmt::format("P2 velocity: ({} {})", m_player2.velocity.x, m_player2.velocity.y));
 }
 
 std::vector<GameScene::DrawableEntity> RingScene::drawableEntities()
@@ -185,6 +205,22 @@ vec2f RingScene::setFacingDirections(PlayableCharacter &p1, PlayableCharacter &p
   }
 
   return direction;
+}
+
+void RingScene::playerPushBack(PlayableCharacter &pushing_player, PlayableCharacter &pushed_player, PushBackStyle style)
+{
+  vec2f direction = pushed_player.position - pushing_player.position;
+
+  switch (style) {
+  case PushBackStyle::Impulse:
+    static constexpr float pushback_velocity = 30.0F;
+    pushed_player.beginPushBack(pushback_velocity * normalize(direction));
+    break;
+  case PushBackStyle::Constant:
+    static constexpr float constant_push_speed = 5.0F;
+    pushing_player.velocity = pushed_player.velocity = constant_push_speed * normalize(direction);
+    break;
+  }
 }
 
 

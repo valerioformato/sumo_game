@@ -71,6 +71,8 @@ public:
   // TODO: remove later
   [[nodiscard]] unsigned int currentAnimationFrame() const { return m_animation_frame; }
 
+  void beginPushBack(vec2f impulse);
+
 private:
   PlayerColor m_color{ PlayerColor::Blue };
   PlayerFacingDirection m_last_facing_direction{ facing_direction };
@@ -79,6 +81,9 @@ private:
   Clock m_animation_timer{};
   unsigned int m_animation_frame{ 0 };
   AnimatedSprite m_current_sprite = m_animations[facing_direction];
+
+  bool m_in_pushback_animation{ false };
+  vec2f m_pushback_velocity{ 0.0F, 0.0F };
 
   static constexpr milliseconds animation_frametime = 500.0ms;
 
