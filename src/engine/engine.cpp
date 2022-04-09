@@ -1,18 +1,28 @@
+// dependencies headers
 #include <fmt/chrono.h>
 #include <fmt/format.h>
 
+// project headers
 #include "engine/engine.hpp"
+#include "game/assets/ascii-art/title.hpp"
 
 namespace Sumo {
 
 GameEngine::GameEngine()
 {
-  m_renderer.begin();
-  m_main_component = ftxui::Renderer([&] { return m_renderer.end(); });
 
-  // FIXME: ugly, but temporary
-  auto *scene = dynamic_cast<Game::RingScene *>(m_scene.get());
-  m_main_component |= scene->eventHandler();
+  // The tree of components. This defines how to navigate using the keyboard.
+  m_main_menu.buttons = ftxui::Container::Horizontal({
+    ftxui::Button("Play!", [this] { startGame(); }),
+  });
+  m_main_menu.addButtons();
+
+  m_main_menu_component = ftxui::Renderer(m_main_menu.buttons, [this] { return m_main_menu.element(); });
+
+  m_game_component = ftxui::Renderer([this] { return m_renderer.end(); });
+  m_main_component = ftxui::Container::Tab({ m_main_menu_component, m_game_component }, &m_state);
+
+  for (const auto &handler : m_scene->eventHandlers()) { m_main_component |= handler; }
 };
 
 GameEngine::~GameEngine()
@@ -65,6 +75,16 @@ void GameEngine::drawLoop()
       std::this_thread::sleep_for(target_frame_time - draw_duration);
     }
   }
+}
+
+void GameEngine::startGame()
+{
+  m_state = static_cast<int>(GameState::Playing);
+
+  m_renderer.begin();
+
+  m_draw_thread = std::thread{ &GameEngine::drawLoop, this };
+  m_game_thread = std::thread{ &GameEngine::tick, this };
 }
 
 void GameEngine::run() { m_screen.Loop(m_main_component); }

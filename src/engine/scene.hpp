@@ -5,6 +5,9 @@
 #include <chrono>
 #include <mutex>
 
+// dependencies headers
+#include <ftxui/component/component.hpp>
+
 // project headers
 #include "engine/sprite.hpp"
 #include "utils/bitmap.hpp"
@@ -22,6 +25,8 @@ public:
 
   using DrawableEntity = std::tuple<StaticSprite, vec2u, bool>;
   virtual std::vector<DrawableEntity> drawableEntities() = 0;
+
+  virtual std::vector<ftxui::ComponentDecorator> eventHandlers() = 0;
 };
 
 }// namespace Sumo

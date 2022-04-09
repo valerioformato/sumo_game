@@ -23,10 +23,13 @@ public:
 
   void draw(Bitmap &screen_buffer);
   void update(milliseconds dt) override;
-  std::vector<DrawableEntity> drawableEntities() override;
+  [[nodiscard]] std::vector<DrawableEntity> drawableEntities() override;
 
 
-  [[nodiscard]] ftxui::ComponentDecorator eventHandler() { return m_player1_controller.event_handler; }
+  [[nodiscard]] std::vector<ftxui::ComponentDecorator> eventHandlers()
+  {
+    return { m_player1_controller.event_handler };
+  }
 
   [[nodiscard]] const std::vector<std::string> &debugInfo() { return m_debug_info; }
 
