@@ -10,11 +10,14 @@ class MainMenu
 public:
   MainMenu();
 
-  [[nodiscard]] ftxui::Element element() const { return ftxui::vbox(m_menu_elements) | ftxui::border; };
+  [[nodiscard]] ftxui::Element element() const
+  {
+    auto elements = m_menu_elements;
+    elements.push_back(buttons->Render() | ftxui::center);
+    return ftxui::vbox(elements) | ftxui::border;
+  };
 
   ftxui::Component buttons;
-
-  void addButtons() { m_menu_elements.push_back(buttons->Render() | ftxui::center); };
 
 private:
   ftxui::Elements m_menu_elements;

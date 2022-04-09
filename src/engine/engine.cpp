@@ -13,15 +13,12 @@ GameEngine::GameEngine()
 
   m_main_menu.buttons = ftxui::Container::Horizontal({
     ftxui::Button("Play!", [this] { startGame(); }),
-    ftxui::Button("test", [] {}),
   });
-  m_main_menu.addButtons();
 
   m_end_menu.buttons = ftxui::Container::Horizontal({
     ftxui::Button("Play again!", [this] { startGame(); }),
-    ftxui::Button("Exit", [this] { exit(); }),
+    ftxui::Button("Exit", [this] { this->exit(); }),
   });
-  m_end_menu.addButtons();
 
   m_main_menu_component = ftxui::Renderer(m_main_menu.buttons, [this] { return m_main_menu.element(); });
   m_end_menu_component = ftxui::Renderer(m_end_menu.buttons, [this] { return m_end_menu.element(); });
@@ -31,6 +28,12 @@ GameEngine::GameEngine()
 
   for (const auto &handler : m_scene->eventHandlers()) { m_main_component |= handler; }
 };
+
+GameEngine::~GameEngine()
+{
+  m_draw_thread.join();
+  m_game_thread.join();
+}
 
 using milliseconds = std::chrono::duration<double, std::milli>;
 

@@ -26,7 +26,8 @@ public:
   [[nodiscard]] std::vector<DrawableEntity> drawableEntities() override;
 
 
-  [[nodiscard]] std::vector<ftxui::ComponentDecorator> eventHandlers()
+  // did it like this cause maybe one day we'll support pvp mode :)
+  [[nodiscard]] std::vector<ftxui::ComponentDecorator> eventHandlers() override
   {
     return { m_player1_controller.event_handler };
   }

@@ -22,7 +22,7 @@ public:
   static constexpr unsigned int BUFFER_HEIGHT = 100;
 
   GameEngine();
-  ~GameEngine() = default;
+  ~GameEngine();
 
   void run();
 
