@@ -88,7 +88,7 @@ private:
   bool m_in_pushback_animation{ false };
   vec2f m_pushback_velocity{ 0.0F, 0.0F };
 
-  static constexpr milliseconds animation_frametime = 500.0ms;
+  static constexpr milliseconds animation_frametime = 250.0ms;
 
 public:
   CircleCollider collider{ position,
