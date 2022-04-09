@@ -11,26 +11,26 @@ namespace Sumo {
 GameEngine::GameEngine()
 {
 
-  // The tree of components. This defines how to navigate using the keyboard.
   m_main_menu.buttons = ftxui::Container::Horizontal({
     ftxui::Button("Play!", [this] { startGame(); }),
+    ftxui::Button("test", [] {}),
   });
   m_main_menu.addButtons();
 
+  m_end_menu.buttons = ftxui::Container::Horizontal({
+    ftxui::Button("Play again!", [this] { startGame(); }),
+    ftxui::Button("Exit", [this] { exit(); }),
+  });
+  m_end_menu.addButtons();
+
   m_main_menu_component = ftxui::Renderer(m_main_menu.buttons, [this] { return m_main_menu.element(); });
+  m_end_menu_component = ftxui::Renderer(m_end_menu.buttons, [this] { return m_end_menu.element(); });
 
   m_game_component = ftxui::Renderer([this] { return m_renderer.end(); });
-  m_main_component = ftxui::Container::Tab({ m_main_menu_component, m_game_component }, &m_state);
+  m_main_component = ftxui::Container::Tab({ m_main_menu_component, m_game_component, m_end_menu_component }, &m_state);
 
   for (const auto &handler : m_scene->eventHandlers()) { m_main_component |= handler; }
 };
-
-GameEngine::~GameEngine()
-{
-  m_stop_game_loop = true;
-  m_draw_thread.join();
-  m_game_thread.join();
-}
 
 using milliseconds = std::chrono::duration<double, std::milli>;
 
@@ -81,18 +81,35 @@ void GameEngine::startGame()
 {
   m_state = static_cast<int>(GameState::Playing);
 
+  m_scene->start();
   m_renderer.begin();
+
+  if (m_already_running) {
+    m_draw_thread.join();
+    m_game_thread.join();
+
+    m_stop_game_loop = false;
+  }
 
   m_draw_thread = std::thread{ &GameEngine::drawLoop, this };
   m_game_thread = std::thread{ &GameEngine::tick, this };
+
+  m_already_running = true;
 }
 
 void GameEngine::run() { m_screen.Loop(m_main_component); }
+
+void GameEngine::exit() { m_screen.ExitLoopClosure()(); }
 
 void GameEngine::tick()
 {
   while (!m_stop_game_loop) {
     static auto last_tick = std::chrono::steady_clock::now();
+
+    if (m_scene->finished()) {
+      m_stop_game_loop = true;
+      m_state = static_cast<int>(GameState::End);
+    }
 
     using namespace std::chrono_literals;
     std::this_thread::sleep_for(1.0s / 120.0);// NOLINT magic numbers

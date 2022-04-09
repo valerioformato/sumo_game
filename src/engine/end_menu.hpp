@@ -1,14 +1,14 @@
-#ifndef SUMO_MAIN_MENU_HPP
-#define SUMO_MAIN_MENU_HPP
+#ifndef SUMO_END_MENU_HPP
+#define SUMO_END_MENU_HPP
 
 // dependencies headers
 #include <ftxui/component/component.hpp>
 
 namespace Sumo {
-class MainMenu
+class EndMenu
 {
 public:
-  MainMenu();
+  EndMenu();
 
   [[nodiscard]] ftxui::Element element() const { return ftxui::vbox(m_menu_elements) | ftxui::border; };
 
