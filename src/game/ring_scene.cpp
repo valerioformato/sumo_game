@@ -176,6 +176,9 @@ void RingScene::reset()
   m_player1.velocity = vec2f{ 0.0F, 0.0F };
   m_player2.velocity = vec2f{ 0.0F, 0.0F };
 
+  m_player1.stopPushBack();
+  m_player2.stopPushBack();
+
   result = Result::None;
 }
 

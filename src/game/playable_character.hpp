@@ -7,8 +7,10 @@
 #include "game/collider.hpp"
 #include "utils/clock.hpp"
 
+#include "game/assets/sprites/blu_back.hpp"
 #include "game/assets/sprites/blu_front.hpp"
 #include "game/assets/sprites/blu_side.hpp"
+#include "game/assets/sprites/red_back.hpp"
 #include "game/assets/sprites/red_front.hpp"
 #include "game/assets/sprites/red_side.hpp"
 
@@ -35,13 +37,13 @@ constexpr AnimatedSprite red_side_flipped{ red_side.dimensions, red_side.frames,
 
 using Direction = Sumo::Game::PlayerFacingDirection;
 inline Sumo::Game::AnimationMap blu_animations = {
-  { Direction::Up, blu_front },
+  { Direction::Up, blu_back },
   { Direction::Down, blu_front },
   { Direction::Left, blu_side },
   { Direction::Right, blu_side_flipped },
 };
 inline Sumo::Game::AnimationMap red_animations = {
-  { Direction::Up, red_front },
+  { Direction::Up, red_back },
   { Direction::Down, red_front },
   { Direction::Left, red_side },
   { Direction::Right, red_side_flipped },
@@ -72,6 +74,7 @@ public:
   [[nodiscard]] unsigned int currentAnimationFrame() const { return m_animation_frame; }
 
   void beginPushBack(vec2f impulse);
+  void stopPushBack() { m_in_pushback_animation = false; }
 
 private:
   PlayerColor m_color{ PlayerColor::Blue };
