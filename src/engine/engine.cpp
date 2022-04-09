@@ -65,9 +65,8 @@ void GameEngine::drawLoop()
       m_renderer.display_debug_text(std::to_string(frame_counter));
       m_renderer.display_debug_text(fmt::format(
         "{} fps, frame time = {:4.2f}ms", static_cast<unsigned int>(milliseconds_to_seconds / dt.count()), dt.count()));
-      for (const auto &line : dynamic_cast<Game::RingScene *>(m_scene.get())->debugInfo()) {
-        m_renderer.display_debug_text(line);
-      }
+      auto scene_debug_info = dynamic_cast<Game::RingScene *>(m_scene.get())->debugInfo();
+      for (const auto &line : scene_debug_info) { m_renderer.display_debug_text(line); }
     }
     auto draw_end_time = std::chrono::steady_clock::now();
     auto draw_duration = std::chrono::duration_cast<milliseconds>(draw_end_time - drawTime);
