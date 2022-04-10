@@ -1,6 +1,9 @@
 #ifndef SUMO_RENDERER_HPP
 #define SUMO_RENDERER_HPP
 
+// c++ headers
+#include <array>
+
 // dependencies headers
 #include <ftxui/component/component.hpp>
 
@@ -31,7 +34,7 @@ public:
 
   void reset_debug_text() { m_debug_element = ftxui::vbox({}); };
 
-  std::array<bool, 3> round_states{ false, false, false };
+  std::array<bool, 3> round_states = { false, false, false };
 
   ftxui::Element checkboxes() const
   {

@@ -5,7 +5,8 @@
 #include <thread>
 
 // dependencies headers
-#include <ftxui/component/screen_interactive.hpp>// for ScreenInteractive
+#include <ftxui/component/component.hpp>
+#include <ftxui/component/screen_interactive.hpp>
 
 // project headers
 #include "engine/end_menu.hpp"
@@ -40,10 +41,10 @@ private:
   EndMenu m_end_menu;
   Renderer m_renderer{ BUFFER_WIDTH, BUFFER_HEIGHT };
 
-  ftxui::Component m_main_component;
-  ftxui::Component m_main_menu_component;
-  ftxui::Component m_end_menu_component;
-  ftxui::Component m_game_component;
+  ftxui::Component m_main_component{};
+  ftxui::Component m_main_menu_component{};
+  ftxui::Component m_end_menu_component{};
+  ftxui::Component m_game_component{};
   ftxui::ScreenInteractive m_screen{ ftxui::ScreenInteractive::Fullscreen() };
 
   void startGame();
