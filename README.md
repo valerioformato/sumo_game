@@ -17,4 +17,4 @@ LGTM Has to be set up manually after template is created:
 - *cppcheck*
     - `unusedPrivateFunction`: This check triggers false positives too often, especially when a private class member is used in a lambda function and/or as an argument for `std::thread` or `std::jthread`.
 - *clang-tidy*
-    - ![just kidding](https://imgflip.com/i/6c4c38)
+    - ![just kidding](https://i.imgflip.com/6c4c38.jpg)
