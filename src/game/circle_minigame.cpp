@@ -22,8 +22,10 @@ CircleMinigame::CircleMinigame()
 
 void CircleMinigame::updateAnimation(float tick)
 {
+  static constexpr float turn_limit = 3.F*two_pi_f; 
+
   m_line_angle_total += tick * LINE_SPEED; 
-  if(m_line_angle_total > 3.f*two_pi_f)
+  if(m_line_angle_total > turn_limit)
   {
     m_player_win = false; 
     m_has_terminated = true; 
