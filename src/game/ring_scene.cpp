@@ -44,6 +44,11 @@ RingScene::RingScene()
 
     auto dt = std::chrono::duration_cast<milliseconds>(event_time - m_player1_controller.last_event.key_time);
 
+    if (m_in_minigame && event == ftxui::Event::Character(' ')) {
+      m_minigame.check();
+      return true;
+    }
+
     if (!isKeyArrowEvent(event)) {
       if (isKeyArrowEvent(m_player1_controller.last_event.event)) {
         return false;
@@ -97,6 +102,8 @@ std::vector<GameScene::DrawableEntity> RingScene::drawableEntities()
     std::swap(entities[entities.size() - 2], entities[entities.size() - 1]);
   }
 
+  if (m_in_minigame) { entities.emplace_back(m_minigame.sprite(), vec2u{ 0U, 0U }, false); }
+
   return entities;
 }
 
@@ -146,14 +153,15 @@ void RingScene::updatePlayers(const float tick)
     return p1_test_collider.collision(p2_test_collider);
   };
 
+  static constexpr milliseconds minigame_timeout{ 100.0 };
   if (!playersWillCollide(tick)) {
     m_players_state = PlayerState::Free;
-  } else {
+  } else if (std::chrono::duration_cast<milliseconds>(std::chrono::steady_clock::now() - m_last_minigame_end).count()
+             > minigame_timeout.count()) {
     m_debug_info.emplace_back("Players locked!");
     m_players_state = PlayerState::Locked;
     m_player1.velocity = { 0, 0 };
     m_player2.velocity = { 0, 0 };
-    playerPushBack(m_player2, m_player1, PushBackStyle::Constant);
     startMinigame();
   }
 
@@ -175,11 +183,13 @@ void RingScene::updateMinigame(const float tick)
 {
   m_minigame.updateAnimation(tick);
   if (auto const res = m_minigame.result(); res.has_value()) {
+    m_debug_info.emplace_back("Minigame result: {}", res.value());
     if (res.value()) {
       playerPushBack(m_player1, m_player2, PushBackStyle::Impulse);
     } else {
       playerPushBack(m_player2, m_player1, PushBackStyle::Impulse);
     }
+    m_last_minigame_end = std::chrono::steady_clock::now();
     m_in_minigame = false;
   }
 }

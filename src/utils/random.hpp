@@ -1,9 +1,11 @@
 #ifndef SUMO_RANDOM_HPP
 #define SUMO_RANDOM_HPP
 
-#include <random>
 #include <limits>
+#include <random>
 #include <type_traits>
+
+#include "utils/math.hpp"
 
 namespace Sumo {
 
@@ -12,9 +14,7 @@ template<Numeric T> class UniformRand
 public:
   UniformRand(T i = std::numeric_limits<T>::min(), T j = std::numeric_limits<T>::max(), unsigned seed = 0)
     : rand_engine{ seed }, dist{ i, j }
-  {
-    
-  }
+  {}
 
   [[nodiscard]] T operator()() { return dist(rand_engine); }
 
@@ -24,7 +24,6 @@ private:
     dist;
 };
 
-} // namespace Sumo
+}// namespace Sumo
 
 #endif// SUMO_RANDOM_HPP
-

@@ -8,9 +8,9 @@
 #include "game/assets/sprites/ring.hpp"
 #include "game/assets/sprites/sand_tile.hpp"
 
+#include "game/circle_minigame.hpp"
 #include "game/playable_character.hpp"
 #include "game/player_controller.hpp"
-#include "game/circle_minigame.hpp"
 
 namespace Sumo::Game {
 
@@ -47,8 +47,9 @@ private:
 
   PlayableCharacter m_player2{ PlayerColor::Red };
 
-  CircleMinigame m_minigame; 
-  bool m_in_minigame {false}; 
+  CircleMinigame m_minigame;
+  bool m_in_minigame{ false };
+  std::chrono::steady_clock::time_point m_last_minigame_end;
 
   std::vector<std::string> m_debug_info{};
 
@@ -62,8 +63,8 @@ private:
 
 
   void updatePlayers(const float tick);
-  void startMinigame(); 
-  void updateMinigame(const float tick);  
+  void startMinigame();
+  void updateMinigame(const float tick);
 
   unsigned int m_rounds{ 0 };// round! see? :D
 

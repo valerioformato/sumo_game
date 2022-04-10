@@ -4,35 +4,38 @@
 #include <optional>
 
 #include "engine/sprite.hpp"
+#include "game/assets/sprites/minigame.hpp"
+#include "utils/clock.hpp"
+#include "utils/random.hpp"
 
 namespace Sumo::Game {
 
 class CircleMinigame
 {
 public:
-  CircleMinigame() = default; 
+  CircleMinigame();
 
-  void updateAnimation(float tick)
-  {
-    
-  }
+  void updateAnimation(float tick);
 
-  [[nodiscard]] std::optional<bool> result() const
-  {
-    return (m_has_terminated ? std::optional{ m_player_win } : std::optional<bool>{}); 
-  }
+  void check();
 
-  void reset()
-  {}
+  [[nodiscard]] std::optional<bool> result() const;
+
+  void reset();
+
+  [[nodiscard]] StaticSprite sprite() const;
 
 private:
-  static constexpr milliseconds animation_frametime{ 25.0 };
-  static constexpr float radius = 20.f;  
+  UniformRand<float> m_unif_dist{ 0.0F, 1.0F };
 
-  bool m_has_terminated{ true }; 
-  bool m_player_win{ true }; 
+  bool m_has_terminated{ false };
+  bool m_player_win{ true };
+
+  float m_target_angle;
+  float m_target_size;
+  float m_line_angle;
 };
 
-}
+}// namespace Sumo::Game
 
 #endif// SUMO_CIRCLE_MINIGAME_HPP
