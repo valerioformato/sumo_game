@@ -56,13 +56,13 @@ void GameEngine::drawLoop()
       for (auto [sprite, position, tiled] : m_scene->drawableEntities()) { m_renderer.submit(sprite, position, tiled); }
     }
 
-    // NOTE: we have to use .count here because of this issue with msvc 19
-    // see https://github.com/fmtlib/fmt/issues/2854
     static constexpr double milliseconds_to_seconds = 1000.0;
     // this happens too fast, let's slow it down by 5x
     if ((frame_counter % 5) == 0U) {// NOLINT magic numbers
       m_renderer.reset_debug_text();
       m_renderer.display_debug_text(std::to_string(frame_counter));
+      // NOTE: we have to use .count here because of this issue with msvc 19
+      // see https://github.com/fmtlib/fmt/issues/2854
       m_renderer.display_debug_text(fmt::format(
         "{} fps, frame time = {:4.2f}ms", static_cast<unsigned int>(milliseconds_to_seconds / dt.count()), dt.count()));
       auto scene_debug_info = dynamic_cast<Game::RingScene *>(m_scene.get())->debugInfo();

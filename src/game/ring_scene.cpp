@@ -4,6 +4,7 @@
 #include <ftxui/component/event.hpp>
 
 #include "engine/engine.hpp"
+#include "game/circle_minigame.hpp"
 #include "game/ring_scene.hpp"
 
 namespace Sumo::Game {
@@ -16,20 +17,15 @@ namespace {
             || event == ftxui::Event::ArrowDown);
   }
 
-  vec2f direction(const ftxui::Event& key_event)
+  vec2f direction(const ftxui::Event &key_event)
   {
-    if (key_event == ftxui::Event::ArrowUp)
-      return vec2f{ 0, -1 };
-    if (key_event == ftxui::Event::ArrowDown) 
-      return vec2f{ 0, 1 };
-    if (key_event == ftxui::Event::ArrowLeft) 
-      return vec2f{ -1, 0 };
-    if (key_event == ftxui::Event::ArrowRight)
-      return vec2f{ 1, 0 };
-
-    return vec2f{0,0}; 
+    if (key_event == ftxui::Event::ArrowUp) { return vec2f{ 0, -1 }; }
+    if (key_event == ftxui::Event::ArrowDown) { return vec2f{ 0, 1 }; }
+    if (key_event == ftxui::Event::ArrowLeft) { return vec2f{ -1, 0 }; }
+    if (key_event == ftxui::Event::ArrowRight) { return vec2f{ 1, 0 }; }
+    return vec2f{ 0, 0 };
   }
-}
+}// namespace
 
 RingScene::RingScene()
 {
@@ -57,11 +53,12 @@ RingScene::RingScene()
           return false;
         }
       }
+    } else {
+      m_player1_controller.last_event.key_event = event;
+      m_player1_controller.last_event.key_time = event_time;
+      m_player1.velocity = m_player1.speed * direction(event);
     }
-    
-    m_player1_controller.last_event.key_event = event;
-    m_player1_controller.last_event.key_time = event_time;
-    m_player1.velocity = m_player1.speed * direction(event);
+
     return true;
   });
 }
@@ -72,10 +69,10 @@ void RingScene::update(const milliseconds dt)
   static constexpr float milliseconds_to_seconds = 0.001F;
   const auto tick = milliseconds_to_seconds * static_cast<float>(dt.count());
 
-  if(m_in_minigame) {
-    updateMinigame(tick); 
+  if (m_in_minigame) {
+    updateMinigame(tick);
   } else {
-    updatePlayers(tick); 
+    updatePlayers(tick);
   }
 }
 
@@ -157,7 +154,7 @@ void RingScene::updatePlayers(const float tick)
     m_player1.velocity = { 0, 0 };
     m_player2.velocity = { 0, 0 };
     playerPushBack(m_player2, m_player1, PushBackStyle::Constant);
-    startMinigame(); 
+    startMinigame();
   }
 
   m_player1.updatePosition(tick);
@@ -170,7 +167,7 @@ void RingScene::updatePlayers(const float tick)
 void RingScene::startMinigame()
 {
   m_in_minigame = true;
-  m_minigame.reset(); 
+  m_minigame.reset();
 }
 
 
@@ -178,11 +175,12 @@ void RingScene::updateMinigame(const float tick)
 {
   m_minigame.updateAnimation(tick);
   if (auto const res = m_minigame.result(); res.has_value()) {
-    if(res.value())
+    if (res.value()) {
       playerPushBack(m_player1, m_player2, PushBackStyle::Impulse);
-    else
+    } else {
       playerPushBack(m_player2, m_player1, PushBackStyle::Impulse);
-    m_in_minigame = false; 
+    }
+    m_in_minigame = false;
   }
 }
 
