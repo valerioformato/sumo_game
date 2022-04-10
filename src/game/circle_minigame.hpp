@@ -35,6 +35,13 @@ private:
   float m_target_size;
   float m_line_angle_total;
   float m_line_angle;
+
+  unsigned int m_radius{ 0U };
+  vec2u m_center{ 0U, 0U };
+
+  vec2u pixelAtAngle(float angle, float scale = 1.0F) const;
+  void drawTarget(std::span<ColorI32> buffer) const;
+  static void drawLine(std::span<ColorI32> buffer, vec2i p0, vec2i p1);
 };
 
 }// namespace Sumo::Game
