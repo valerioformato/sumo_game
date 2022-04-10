@@ -8,7 +8,7 @@ namespace Sumo {
 class EndMenu
 {
 public:
-  EndMenu();
+  EndMenu() = default;
 
   [[nodiscard]] ftxui::Element element() const
   {
@@ -16,6 +16,8 @@ public:
     elements.push_back(buttons->Render() | ftxui::center);
     return ftxui::vbox(elements) | ftxui::border;
   };
+
+  void setWin(bool win);
 
   ftxui::Component buttons;
 

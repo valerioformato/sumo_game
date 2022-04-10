@@ -19,8 +19,10 @@ class RingScene : public GameScene
 public:
   explicit RingScene();
 
+  static constexpr unsigned int max_rounds{ 3U };
+
   enum class Result { None, Win, Loss };
-  Result result{ Result::None };
+  std::array<Result, max_rounds> results{ Result::None };
 
   void draw(Bitmap &screen_buffer);
   void update(milliseconds dt) override;
@@ -36,7 +38,7 @@ public:
   [[nodiscard]] const std::vector<std::string> &debugInfo() const { return m_debug_info; }
 
   void start() override { reset(true); };
-  [[nodiscard]] bool finished() const override { return m_rounds == 3U; }// NOLINT magic numbers
+  [[nodiscard]] std::optional<bool> finalResult() const override;
 
 private:
   StaticSprite m_groundSprite{ Sprites::sand_tile };

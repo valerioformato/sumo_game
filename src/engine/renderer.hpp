@@ -14,10 +14,7 @@ namespace Sumo {
 class Renderer
 {
 public:
-  Renderer(std::size_t width, std::size_t height)
-    : m_frame_buffer(std::make_shared<Bitmap>(width, height)){
-
-      };
+  Renderer(std::size_t width, std::size_t height);
 
   void begin(const ColorI32 &clear_color = ColorI32{});
 
@@ -34,11 +31,21 @@ public:
 
   void reset_debug_text() { m_debug_element = ftxui::vbox({}); };
 
+  std::array<bool, 3> round_states{ false, false, false };
+
+  ftxui::Element checkboxes() const
+  {
+    return ftxui::vbox({ ftxui::text("Rounds:"), m_ui_component->Render() | ftxui::center | ftxui::border });
+  };
+
 private:
   std::shared_ptr<Bitmap> m_frame_buffer;
 
   ftxui::Element m_buffer_element{ ftxui::vbox({ m_frame_buffer | ftxui::border, ftxui::text("") | ftxui::flex }) };
   ftxui::Element m_debug_element{ ftxui::vbox({}) };
+
+  ftxui::Component m_ui_component{ ftxui::Container::Horizontal({}) };
+
 
   void drawSpriteAt(StaticSprite sprite, vec2u screen_pos);
 };

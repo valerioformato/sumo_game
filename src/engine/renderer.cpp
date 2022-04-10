@@ -5,9 +5,16 @@
 #include "engine/engine.hpp"
 #include "engine/renderer.hpp"
 #include "utils/clock.hpp"
+#include "utils/color.hpp"
+#include "utils/math.hpp"
 #include "utils/vec2.hpp"
 
 namespace Sumo {
+
+Renderer::Renderer(std::size_t width, std::size_t height) : m_frame_buffer(std::make_shared<Bitmap>(width, height))
+{
+  for (auto &state : round_states) { m_ui_component->Add(ftxui::Checkbox("", &state)); }
+}
 
 void Renderer::begin(const ColorI32 &clear_color)
 {
@@ -45,7 +52,10 @@ void Renderer::submit(const StaticSprite sprite, vec2u screen_pos, const bool ti
   }
 }
 
-ftxui::Element Renderer::end() { return ftxui::hbox({ m_buffer_element, m_debug_element }); }
+ftxui::Element Renderer::end()
+{
+  return ftxui::hbox({ m_buffer_element, ftxui::vbox({ checkboxes(), m_debug_element }) });
+}
 
 
 }// namespace Sumo

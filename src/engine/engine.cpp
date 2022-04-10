@@ -16,8 +16,10 @@ GameEngine::GameEngine()
   });
 
   m_end_menu.buttons = ftxui::Container::Horizontal({
-    ftxui::Button("Play again!", [this] { startGame(); }),
-    ftxui::Button("Exit", [this] { this->exit(); }),
+    ftxui::Button(
+      "Play again!", [this] { startGame(); }, ftxui::ButtonOption::Animated(ftxui::Color::Green)),
+    ftxui::Button(
+      "Exit", [this] { this->exit(); }, ftxui::ButtonOption::Animated(ftxui::Color::Red)),
   });
 
   m_main_menu_component = ftxui::Renderer(m_main_menu.buttons, [this] { return m_main_menu.element(); });
@@ -60,13 +62,17 @@ void GameEngine::drawLoop()
     // this happens too fast, let's slow it down by 5x
     if ((frame_counter % 5) == 0U) {// NOLINT magic numbers
       m_renderer.reset_debug_text();
-      m_renderer.display_debug_text(std::to_string(frame_counter));
       // NOTE: we have to use .count here because of this issue with msvc 19
       // see https://github.com/fmtlib/fmt/issues/2854
       m_renderer.display_debug_text(fmt::format(
         "{} fps, frame time = {:4.2f}ms", static_cast<unsigned int>(milliseconds_to_seconds / dt.count()), dt.count()));
-      auto scene_debug_info = dynamic_cast<Game::RingScene *>(m_scene.get())->debugInfo();
-      for (const auto &line : scene_debug_info) { m_renderer.display_debug_text(line); }
+      // auto scene_debug_info = dynamic_cast<Game::RingScene *>(m_scene.get())->debugInfo();
+      // for (const auto &line : scene_debug_info) { m_renderer.display_debug_text(line); }
+
+      auto round_results = dynamic_cast<Game::RingScene *>(m_scene.get())->results;
+      for (size_t round = 0; round < round_results.size(); ++round) {
+        m_renderer.round_states.at(round) = (round_results.at(round) == Game::RingScene::Result::Win);
+      }
     }
     auto draw_end_time = std::chrono::steady_clock::now();
     auto draw_duration = std::chrono::duration_cast<milliseconds>(draw_end_time - drawTime);
@@ -108,8 +114,9 @@ void GameEngine::tick()
   while (!m_stop_game_loop) {
     static auto last_tick = std::chrono::steady_clock::now();
 
-    if (m_scene->finished()) {
+    if (auto result = m_scene->finalResult(); result.has_value()) {
       m_stop_game_loop = true;
+      m_end_menu.setWin(result.value());
       m_state = static_cast<int>(GameState::End);
     }
 

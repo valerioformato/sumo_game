@@ -64,7 +64,7 @@ RingScene::RingScene()
       m_player1.velocity = m_player1.speed * direction(event);
     }
 
-    return true;
+    return false;
   });
 }
 
@@ -113,10 +113,12 @@ void RingScene::updatePlayers(const float tick)
   static constexpr auto screen_center =
     static_cast<vec2f>(vec2u{ GameEngine::BUFFER_WIDTH / 2, GameEngine::BUFFER_HEIGHT / 2 });
 
+  if (m_rounds == max_rounds) { return; }
+
   if (distance(m_player1.position, screen_center) > ring_radius) {
-    result = Result::Loss;
+    results.at(m_rounds) = Result::Loss;
   } else if (distance(m_player2.position, screen_center) > ring_radius) {
-    result = Result::Win;
+    results.at(m_rounds) = Result::Win;
   }
 
   const vec2f direction = setFacingDirections(m_player1, m_player2);
@@ -126,7 +128,7 @@ void RingScene::updatePlayers(const float tick)
   m_player2.updateAnimation();
 
   std::string tmp_result{};
-  switch (result) {
+  switch (results.at(m_rounds)) {
   case Result::Win:
     tmp_result = "WIN! ";
     reset();
@@ -206,12 +208,27 @@ void RingScene::reset(bool erase_rounds)
   m_player2.stopPushBack();
 
   if (erase_rounds) {
+    std::fill(begin(results), end(results), Result::None);
     m_rounds = 0U;
   } else {
     ++m_rounds;
   }
-  result = Result::None;
 }
+
+std::optional<bool> RingScene::finalResult() const
+{
+  auto wins = std::count(begin(results), end(results), Result::Win);
+  auto losses = std::count(begin(results), end(results), Result::Loss);
+
+  if (wins > (max_rounds / 2U)) {
+    return true;
+  } else if (losses > (max_rounds / 2U)) {
+    return false;
+  }
+
+  return {};
+}
+
 
 vec2f RingScene::setFacingDirections(PlayableCharacter &p1, PlayableCharacter &p2)
 {

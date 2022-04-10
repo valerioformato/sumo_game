@@ -67,7 +67,9 @@ StaticSprite CircleMinigame::sprite() const
            + vec2u{ static_cast<unsigned int>(scale * radius * std::cos(angle)),
                static_cast<unsigned int>(scale * radius * std::sin(angle)) };
   };
-  [[maybe_unused]] vec2u line_end = pixel_at_angle(m_line_angle);
+
+  // 0.99 to avoid overflowing sprite data
+  vec2u line_end = pixel_at_angle(m_line_angle, 0.99F);// NOLINT magic numbers
 
   sprite_data = Sprites::minigame_data;
 
