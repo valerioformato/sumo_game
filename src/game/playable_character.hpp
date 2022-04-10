@@ -60,7 +60,7 @@ public:
   vec2f position{ 0, 0 };
   vec2f velocity{ 0, 0 };
 
-  float speed{ 15.0f };
+  float speed{ 20.0f };
 
   PlayerFacingDirection facing_direction{ PlayerFacingDirection::Down };
 

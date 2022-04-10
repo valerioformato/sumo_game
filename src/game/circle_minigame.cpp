@@ -1,6 +1,7 @@
 #include <array>
 #include <cmath>
 #include <numeric>
+#include <numbers>
 
 #include "game/circle_minigame.hpp"
 
@@ -21,7 +22,13 @@ CircleMinigame::CircleMinigame()
 
 void CircleMinigame::updateAnimation(float tick)
 {
-  m_line_angle = std::fmod(m_line_angle + tick * LINE_SPEED, two_pi_f);
+  m_line_angle_total += tick * LINE_SPEED; 
+  if(m_line_angle_total > 3.f*two_pi_f)
+  {
+    m_player_win = false; 
+    m_has_terminated = true; 
+  }
+  m_line_angle = std::fmod(m_line_angle_total, two_pi_f);
 }
 
 void CircleMinigame::check()
@@ -41,7 +48,7 @@ void CircleMinigame::reset()
 {
   m_target_angle = m_unif_dist() * two_pi_f;
   m_target_size = (MIN_TARGET_SIZE + (m_unif_dist() * (MAX_TARGET_SIZE - MIN_TARGET_SIZE))) * two_pi_f;
-  m_line_angle = m_unif_dist() * two_pi_f;
+  m_line_angle_total = m_unif_dist() * two_pi_f;
 
   m_has_terminated = false;
 }
@@ -104,7 +111,7 @@ StaticSprite CircleMinigame::sprite() const
     for (unsigned int step = 0U; step < steps; ++step) {
       // basic lerp-ing...
       float theta = m_target_angle - 0.5F * m_target_size// NOLINT magic numbers
-                    + float(step) / static_cast<float>(steps - 1U) * m_target_size;
+                    + static_cast<float>(step) / static_cast<float>(steps - 1U) * m_target_size;
 
       // draw a thick target
       for (auto scale : scales) {
