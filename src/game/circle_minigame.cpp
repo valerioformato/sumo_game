@@ -74,7 +74,7 @@ StaticSprite CircleMinigame::sprite() const
   sprite_data = Sprites::minigame_data;
 
   // draw the line
-  [&](vec2i p0, vec2i p1) {
+  auto draw_line = [&](vec2i p0, vec2i p1) {
     int dx = std::abs(p1.x - p0.x);
     int sx = p0.x < p1.x ? 1 : -1;
     int dy = -std::abs(p1.y - p0.y);
@@ -101,10 +101,12 @@ StaticSprite CircleMinigame::sprite() const
         p0.y = p0.y + sy;
       }
     }
-  }(static_cast<vec2i>(center), static_cast<vec2i>(line_end));
+  };
+
+  draw_line(static_cast<vec2i>(center), static_cast<vec2i>(line_end));
 
   // draw the target
-  [&] {
+  auto draw_target = [&] {
     static constexpr float dtheta = 0.05F;
     static constexpr std::array scales{ 0.9F, 0.95F, 0.99F };
 
@@ -123,7 +125,9 @@ StaticSprite CircleMinigame::sprite() const
         sprite_data[idx] = ColorI32{ 255U, 0U, 0U, 255U };// NOLINT magic numbers
       }
     }
-  }();
+  };
+
+  draw_target();
 
   return StaticSprite{ Sprites::minigame.dimensions, sprite_data };
 }
