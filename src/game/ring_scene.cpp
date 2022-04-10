@@ -34,7 +34,7 @@ RingScene::RingScene()
     if (m_players_state == PlayerState::Locked && event == ftxui::Event::Character(' ')) {
       m_debug_info.emplace_back("Spacebar pressed :)");
       playerPushBack(m_player1, m_player2, PushBackStyle::Impulse);
-      return true;
+      return false;
     }
 
     if (!isKeyArrowEvent(event)) {
@@ -50,31 +50,25 @@ RingScene::RingScene()
 
     m_player1_controller.last_event.key_event = event;
 
-    bool handled = false;
-
     if (event == ftxui::Event::ArrowUp) {
       m_player1_controller.last_event.key_event = event;
       m_player1_controller.last_event.key_time = event_time;
       m_player1.velocity = m_player1.speed * vec2f{ 0, -1 };
-      handled = true;
     } else if (event == ftxui::Event::ArrowDown) {
       m_player1_controller.last_event.key_event = event;
       m_player1_controller.last_event.key_time = event_time;
       m_player1.velocity = m_player1.speed * vec2f{ 0, 1 };
-      handled = true;
     } else if (event == ftxui::Event::ArrowLeft) {
       m_player1_controller.last_event.key_event = event;
       m_player1_controller.last_event.key_time = event_time;
       m_player1.velocity = m_player1.speed * vec2f{ -1, 0 };
-      handled = true;
     } else if (event == ftxui::Event::ArrowRight) {
       m_player1_controller.last_event.key_event = event;
       m_player1_controller.last_event.key_time = event_time;
       m_player1.velocity = m_player1.speed * vec2f{ 1, 0 };
-      handled = true;
     }
 
-    return handled;
+    return false;
   });
 }
 
@@ -168,7 +162,7 @@ std::vector<GameScene::DrawableEntity> RingScene::drawableEntities()
   return entities;
 }
 
-void RingScene::reset()
+void RingScene::reset(bool erase_rounds)
 {
   m_player1.position = p1_starting_pos;
   m_player2.position = p2_starting_pos;
@@ -179,6 +173,11 @@ void RingScene::reset()
   m_player1.stopPushBack();
   m_player2.stopPushBack();
 
+  if (erase_rounds) {
+    m_rounds = 0U;
+  } else {
+    ++m_rounds;
+  }
   result = Result::None;
 }
 

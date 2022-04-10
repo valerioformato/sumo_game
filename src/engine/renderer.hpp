@@ -2,7 +2,7 @@
 #define SUMO_RENDERER_HPP
 
 // dependencies headers
-#include <ftxui/component/component.hpp>// for ScreenInteractive
+#include <ftxui/component/component.hpp>
 
 // project headers
 #include "engine/sprite.hpp"

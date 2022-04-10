@@ -23,12 +23,19 @@ public:
 
   void draw(Bitmap &screen_buffer);
   void update(milliseconds dt) override;
-  std::vector<DrawableEntity> drawableEntities() override;
+  [[nodiscard]] std::vector<DrawableEntity> drawableEntities() override;
 
 
-  [[nodiscard]] ftxui::ComponentDecorator eventHandler() { return m_player1_controller.event_handler; }
+  // did it like this cause maybe one day we'll support pvp mode :)
+  [[nodiscard]] std::vector<ftxui::ComponentDecorator> eventHandlers() override
+  {
+    return { m_player1_controller.event_handler };
+  }
 
-  [[nodiscard]] const std::vector<std::string> &debugInfo() { return m_debug_info; }
+  [[nodiscard]] const std::vector<std::string> &debugInfo() const { return m_debug_info; }
+
+  void start() override { reset(true); };
+  [[nodiscard]] bool finished() const override { return m_rounds == 3U; }// NOLINT magic numbers
 
 private:
   StaticSprite m_groundSprite{ Sprites::sand_tile };
@@ -49,7 +56,9 @@ private:
   static constexpr vec2f p1_starting_pos{ 120.0F, 50.0F };
   static constexpr vec2f p2_starting_pos{ 60.0F, 50.0F };
 
-  void reset();
+  unsigned int m_rounds{ 0 };// round! see? :D
+
+  void reset(bool erase_rounds = false);
 
   // returns the vector between the two player positions
   [[nodiscard]] static vec2f setFacingDirections(PlayableCharacter &p1, PlayableCharacter &p2);
