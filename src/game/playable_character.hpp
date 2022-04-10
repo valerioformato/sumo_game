@@ -18,12 +18,11 @@ namespace Sumo::Game {
 enum class PlayerColor { Red, Blue };
 enum class PlayerFacingDirection { Up, Down, Left, Right };
 
-using namespace std::literals;
 inline std::map<PlayerFacingDirection, std::string_view> direction_debug_name{
-  { PlayerFacingDirection::Up, "up"sv },
-  { PlayerFacingDirection::Down, "down"sv },
-  { PlayerFacingDirection::Left, "left"sv },
-  { PlayerFacingDirection::Right, "right"sv },
+  { PlayerFacingDirection::Up, "up" },
+  { PlayerFacingDirection::Down, "down" },
+  { PlayerFacingDirection::Left, "left" },
+  { PlayerFacingDirection::Right, "right" },
 };
 
 using AnimationMap = std::map<PlayerFacingDirection, AnimatedSprite>;
@@ -88,7 +87,7 @@ private:
   bool m_in_pushback_animation{ false };
   vec2f m_pushback_velocity{ 0.0F, 0.0F };
 
-  static constexpr milliseconds animation_frametime = 250.0ms;
+  static constexpr milliseconds animation_frametime{250.0};
 
 public:
   CircleCollider collider{ position,

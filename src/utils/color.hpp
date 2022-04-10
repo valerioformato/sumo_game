@@ -57,7 +57,7 @@ template<std::floating_point T, std::integral U> [[nodiscard]] constexpr ColorF<
     static_cast<T>(c.a) / static_cast<T>(std::numeric_limits<U>::max()) };
 }
 
-template<std::integral T> constexpr ColorI<T> alpha_blend(const ColorI<T> foreground, const ColorI<T> background)
+template<std::integral T> constexpr ColorI<T> alphaBlend(const ColorI<T> foreground, const ColorI<T> background)
 {
   if (foreground.a == 0 && background.a == 0) return foreground;
 

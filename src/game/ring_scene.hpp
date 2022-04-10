@@ -10,6 +10,7 @@
 
 #include "game/playable_character.hpp"
 #include "game/player_controller.hpp"
+#include "game/circle_minigame.hpp"
 
 namespace Sumo::Game {
 
@@ -39,6 +40,9 @@ private:
 
   PlayableCharacter m_player2{ PlayerColor::Red };
 
+  CircleMinigame m_minigame; 
+  bool m_in_minigame {false}; 
+
   std::vector<std::string> m_debug_info{};
 
   enum class PlayerState { Free, Locked };
@@ -50,6 +54,9 @@ private:
   static constexpr vec2f p2_starting_pos{ 60.0F, 50.0F };
 
   void reset();
+  void updatePlayers(const float tick);
+  void startMinigame(); 
+  void updateMinigame(const float tick);  
 
   // returns the vector between the two player positions
   [[nodiscard]] static vec2f setFacingDirections(PlayableCharacter &p1, PlayableCharacter &p2);

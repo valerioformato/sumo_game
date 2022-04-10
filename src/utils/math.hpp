@@ -23,7 +23,7 @@ concept Numeric = std::integral<T> || std::floating_point<T>;
   return x;
 }
 
-template<Numeric T> [[nodiscard]] constexpr auto wrap_increment(T const x, T const range_start, T const range_end)
+template<Numeric T> [[nodiscard]] constexpr auto loop_increment(T const x, T const range_start, T const range_end)
 {
   return x + static_cast<T>(1) >= range_end ? range_start : x + static_cast<T>(1);
 }
