@@ -1,7 +1,7 @@
 #include <array>
 #include <cmath>
-#include <numeric>
 #include <numbers>
+#include <numeric>
 
 #include "game/circle_minigame.hpp"
 
@@ -15,20 +15,18 @@ constexpr float LINE_SPEED = two_pi_f / 2.0F;// One round trip every 3s
 
 CircleMinigame::CircleMinigame()
   : m_target_angle{ m_unif_dist() * two_pi_f },
-    m_target_size{ (MIN_TARGET_SIZE + (m_unif_dist() * (MAX_TARGET_SIZE - MIN_TARGET_SIZE))) * two_pi_f }, m_line_angle{
-      m_unif_dist() * two_pi_f
-    }
+    m_target_size{ (MIN_TARGET_SIZE + (m_unif_dist() * (MAX_TARGET_SIZE - MIN_TARGET_SIZE))) * two_pi_f },
+    m_line_angle_total{ m_unif_dist() * two_pi_f }, m_line_angle{ m_line_angle_total }
 {}
 
 void CircleMinigame::updateAnimation(float tick)
 {
-  static constexpr float turn_limit = 3.F*two_pi_f; 
+  static constexpr float turn_limit = 3.F * two_pi_f;
 
-  m_line_angle_total += tick * LINE_SPEED; 
-  if(m_line_angle_total > turn_limit)
-  {
-    m_player_win = false; 
-    m_has_terminated = true; 
+  m_line_angle_total += tick * LINE_SPEED;
+  if (m_line_angle_total > turn_limit) {
+    m_player_win = false;
+    m_has_terminated = true;
   }
   m_line_angle = std::fmod(m_line_angle_total, two_pi_f);
 }

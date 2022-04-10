@@ -33,8 +33,8 @@ private:
 
   float m_target_angle;
   float m_target_size;
+  float m_line_angle_total;
   float m_line_angle;
-  float m_line_angle_total;   
 };
 
 }// namespace Sumo::Game
