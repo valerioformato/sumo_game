@@ -57,12 +57,12 @@ RingScene::RingScene()
           return false;
         }
       }
-    } else {
-      m_player1_controller.last_event.key_event = event;
-      m_player1_controller.last_event.key_time = event_time;
-      m_player1.velocity = m_player1.speed * direction(event);
-      return true;
     }
+    
+    m_player1_controller.last_event.key_event = event;
+    m_player1_controller.last_event.key_time = event_time;
+    m_player1.velocity = m_player1.speed * direction(event);
+    return true;
   });
 }
 
@@ -101,20 +101,6 @@ std::vector<GameScene::DrawableEntity> RingScene::drawableEntities()
   }
 
   return entities;
-}
-
-void RingScene::reset()
-{
-  m_player1.position = p1_starting_pos;
-  m_player2.position = p2_starting_pos;
-
-  m_player1.velocity = vec2f{ 0.0F, 0.0F };
-  m_player2.velocity = vec2f{ 0.0F, 0.0F };
-
-  m_player1.stopPushBack();
-  m_player2.stopPushBack();
-
-  result = Result::None;
 }
 
 void RingScene::updatePlayers(const float tick)
@@ -198,6 +184,25 @@ void RingScene::updateMinigame(const float tick)
       playerPushBack(m_player2, m_player1, PushBackStyle::Impulse);
     m_in_minigame = false; 
   }
+}
+
+void RingScene::reset(bool erase_rounds)
+{
+  m_player1.position = p1_starting_pos;
+  m_player2.position = p2_starting_pos;
+
+  m_player1.velocity = vec2f{ 0.0F, 0.0F };
+  m_player2.velocity = vec2f{ 0.0F, 0.0F };
+
+  m_player1.stopPushBack();
+  m_player2.stopPushBack();
+
+  if (erase_rounds) {
+    m_rounds = 0U;
+  } else {
+    ++m_rounds;
+  }
+  result = Result::None;
 }
 
 vec2f RingScene::setFacingDirections(PlayableCharacter &p1, PlayableCharacter &p2)

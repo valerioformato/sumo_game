@@ -1,23 +1,36 @@
+// dependencies headers
 #include <fmt/chrono.h>
 #include <fmt/format.h>
 
+// project headers
 #include "engine/engine.hpp"
+#include "game/assets/ascii-art/title.hpp"
 
 namespace Sumo {
 
 GameEngine::GameEngine()
 {
-  m_renderer.begin();
-  m_main_component = ftxui::Renderer([&] { return m_renderer.end(); });
 
-  // FIXME: ugly, but temporary
-  auto *scene = dynamic_cast<Game::RingScene *>(m_scene.get());
-  m_main_component |= scene->eventHandler();
+  m_main_menu.buttons = ftxui::Container::Horizontal({
+    ftxui::Button("Play!", [this] { startGame(); }),
+  });
+
+  m_end_menu.buttons = ftxui::Container::Horizontal({
+    ftxui::Button("Play again!", [this] { startGame(); }),
+    ftxui::Button("Exit", [this] { this->exit(); }),
+  });
+
+  m_main_menu_component = ftxui::Renderer(m_main_menu.buttons, [this] { return m_main_menu.element(); });
+  m_end_menu_component = ftxui::Renderer(m_end_menu.buttons, [this] { return m_end_menu.element(); });
+
+  m_game_component = ftxui::Renderer([this] { return m_renderer.end(); });
+  m_main_component = ftxui::Container::Tab({ m_main_menu_component, m_game_component, m_end_menu_component }, &m_state);
+
+  for (const auto &handler : m_scene->eventHandlers()) { m_main_component |= handler; }
 };
 
 GameEngine::~GameEngine()
 {
-  m_stop_game_loop = true;
   m_draw_thread.join();
   m_game_thread.join();
 }
@@ -52,9 +65,8 @@ void GameEngine::drawLoop()
       m_renderer.display_debug_text(std::to_string(frame_counter));
       m_renderer.display_debug_text(fmt::format(
         "{} fps, frame time = {:4.2f}ms", static_cast<unsigned int>(milliseconds_to_seconds / dt.count()), dt.count()));
-      for (const auto &line : dynamic_cast<Game::RingScene *>(m_scene.get())->debugInfo()) {
-        m_renderer.display_debug_text(line);
-      }
+      auto scene_debug_info = dynamic_cast<Game::RingScene *>(m_scene.get())->debugInfo();
+      for (const auto &line : scene_debug_info) { m_renderer.display_debug_text(line); }
     }
     auto draw_end_time = std::chrono::steady_clock::now();
     auto draw_duration = std::chrono::duration_cast<milliseconds>(draw_end_time - drawTime);
@@ -67,12 +79,39 @@ void GameEngine::drawLoop()
   }
 }
 
+void GameEngine::startGame()
+{
+  m_state = static_cast<int>(GameState::Playing);
+
+  m_scene->start();
+  m_renderer.begin();
+
+  if (m_already_running) {
+    m_draw_thread.join();
+    m_game_thread.join();
+
+    m_stop_game_loop = false;
+  }
+
+  m_draw_thread = std::thread{ &GameEngine::drawLoop, this };
+  m_game_thread = std::thread{ &GameEngine::tick, this };
+
+  m_already_running = true;
+}
+
 void GameEngine::run() { m_screen.Loop(m_main_component); }
+
+void GameEngine::exit() { m_screen.ExitLoopClosure()(); }
 
 void GameEngine::tick()
 {
   while (!m_stop_game_loop) {
     static auto last_tick = std::chrono::steady_clock::now();
+
+    if (m_scene->finished()) {
+      m_stop_game_loop = true;
+      m_state = static_cast<int>(GameState::End);
+    }
 
     using namespace std::chrono_literals;
     std::this_thread::sleep_for(1.0s / 120.0);// NOLINT magic numbers
