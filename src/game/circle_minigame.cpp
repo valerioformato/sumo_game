@@ -59,7 +59,7 @@ void CircleMinigame::drawTarget(std::span<ColorI32> buffer) const
 
     // draw a thick target
     for (auto scale : scales) {
-      vec2u target_pixel = pixelAtAngle(theta, scale);
+      vec2u target_pixel = static_cast<vec2u>(pixelAtAngle(theta, scale));
 
       unsigned int idx = target_pixel.x + Sprites::minigame.dimensions.x * target_pixel.y;
       buffer[idx] = ColorI32{ 255U, 0U, 0U, 255U };// NOLINT magic numbers
@@ -67,11 +67,12 @@ void CircleMinigame::drawTarget(std::span<ColorI32> buffer) const
   }
 };
 
-vec2u CircleMinigame::pixelAtAngle(float angle, float scale) const
+vec2i CircleMinigame::pixelAtAngle(float angle, float scale) const
 {
-  return m_center
-         + vec2u{ static_cast<unsigned int>(scale * static_cast<float>(m_radius) * std::cos(angle)),
-             static_cast<unsigned int>(scale * static_cast<float>(m_radius) * std::sin(angle)) };
+  vec2i center(m_center.x, m_center.y);
+  return center
+         + vec2i{ static_cast<int>(scale * static_cast<float>(m_radius) * std::cos(angle)),
+             static_cast<int>(scale * static_cast<float>(m_radius) * std::sin(angle)) };
 };
 
 
@@ -118,12 +119,13 @@ void CircleMinigame::reset()
 }
 
 
-StaticSprite CircleMinigame::sprite() const
+StaticSprite CircleMinigame::sprite()
 {
   static auto sprite_data = Sprites::minigame_data;
 
   // 0.99 to avoid overflowing sprite data
-  vec2u line_end = pixelAtAngle(m_line_angle, 0.99F);// NOLINT magic numbers
+  vec2u line_end = static_cast<vec2u>(pixelAtAngle(m_line_angle, 0.99F));// NOLINT magic numbers
+  test_var = line_end;
 
   sprite_data = Sprites::minigame_data;
 
