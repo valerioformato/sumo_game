@@ -13,6 +13,27 @@ include(FetchContent)
 
 set(FETCHCONTENT_UPDATES_DISCONNECTED TRUE)
 FetchContent_Declare(
+  docopt
+  GIT_REPOSITORY https://github.com/docopt/docopt.cpp
+  GIT_TAG v0.6.3)
+FetchContent_GetProperties(docopt)
+if(NOT docopt_POPULATED)
+  FetchContent_Populate(docopt)
+  add_subdirectory(${docopt_SOURCE_DIR} ${docopt_BINARY_DIR} EXCLUDE_FROM_ALL)
+endif()
+
+FetchContent_Declare(
+  fmt
+  GIT_REPOSITORY https://github.com/fmtlib/fmt.git
+  GIT_TAG 8.1.1)
+FetchContent_GetProperties(fmt)
+if(NOT fmt_POPULATED)
+  set(FMT_INSTALL ON)
+  FetchContent_Populate(fmt)
+  add_subdirectory(${fmt_SOURCE_DIR} ${fmt_BINARY_DIR})
+endif()
+
+FetchContent_Declare(
   ftxui
   GIT_REPOSITORY https://github.com/ArthurSonzogni/ftxui
   GIT_TAG master)
@@ -24,13 +45,18 @@ if(NOT ftxui_POPULATED)
 endif()
 
 if(EMSCRIPTEN)
+  message(INFO "WebAssembly build")
+  set(CMAKE_BUILD_WITH_INSTALL_RPATH ON)
   set(ENABLE_TESTING CACHE INTERNAL "")
   set(ENABLE_DEVELOPER_MODE
       FALSE
       CACHE BOOL "Enable 'developer mode'")
+  # string(APPEND CMAKE_CXX_FLAGS " -m64")
   string(APPEND CMAKE_CXX_FLAGS " -s USE_PTHREADS")
+  string(APPEND CMAKE_EXE_LINKER_FLAGS " -s USE_PTHREADS")
   string(APPEND CMAKE_EXE_LINKER_FLAGS " -s ASYNCIFY")
   string(APPEND CMAKE_EXE_LINKER_FLAGS " -s PROXY_TO_PTHREAD")
+  # string(APPEND CMAKE_EXE_LINKER_FLAGS " -Wl,-mwasm64")
 endif()
 
 # Note: by default ENABLE_DEVELOPER_MODE is True
@@ -136,12 +162,12 @@ if(EMSCRIPTEN)
   foreach(file "index.html" "run_webassembly.py")
     configure_file(${file} ${file})
   endforeach(file)
-
-  # Make the resources files available to the browser.
-  set_property(
-    TARGET intro
-    APPEND_STRING
-    PROPERTY LINK_FLAGS "--preload-file ../resources/")
+else()
+  target_link_system_libraries(
+    intro
+    PRIVATE
+    project_options
+    project_warnings)
 endif()
 
 # Adding the tests:

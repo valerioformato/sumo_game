@@ -5,7 +5,7 @@
 #include <random>
 
 // dependencies headers
-#include <docopt/docopt.h>
+#include <docopt.h>
 #include <fmt/format.h>
 #include <ftxui/component/captured_mouse.hpp>// for ftxui
 #include <ftxui/component/component.hpp>// for Slider

@@ -9,13 +9,7 @@ add_subdirectory(game)
 
 # Generic test that uses conan libs
 add_executable(intro ${GAME_SOURCES})
-target_link_libraries(
-  intro
-  PRIVATE project_options
-          project_warnings
-          docopt::docopt
-          fmt::fmt
-          spdlog::spdlog)
+target_link_libraries(intro PRIVATE docopt fmt::fmt)
 
 target_link_system_libraries(
   intro
