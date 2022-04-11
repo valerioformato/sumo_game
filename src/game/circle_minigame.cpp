@@ -69,7 +69,7 @@ void CircleMinigame::drawTarget(std::span<ColorI32> buffer) const
 
 vec2i CircleMinigame::pixelAtAngle(float angle, float scale) const
 {
-  vec2i center(m_center.x, m_center.y);
+  vec2i center{ static_cast<int>(m_center.x), static_cast<int>(m_center.y) };
   return center
          + vec2i{ static_cast<int>(scale * static_cast<float>(m_radius) * std::cos(angle)),
              static_cast<int>(scale * static_cast<float>(m_radius) * std::sin(angle)) };
@@ -125,7 +125,6 @@ StaticSprite CircleMinigame::sprite()
 
   // 0.99 to avoid overflowing sprite data
   vec2u line_end = static_cast<vec2u>(pixelAtAngle(m_line_angle, 0.99F));// NOLINT magic numbers
-  test_var = line_end;
 
   sprite_data = Sprites::minigame_data;
 

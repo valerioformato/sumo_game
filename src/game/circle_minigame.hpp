@@ -25,17 +25,16 @@ public:
 
   [[nodiscard]] StaticSprite sprite();
 
-  UniformRand<float> m_unif_dist{ 0.0F, 1.0F };
-  float m_line_angle_total;
-  float m_line_angle;
-  vec2u test_var{ 0U, 0U };
 
 private:
   bool m_has_terminated{ false };
   bool m_player_win{ true };
 
+  UniformRand<float> m_unif_dist{ 0.0F, 1.0F };
   float m_target_angle;
   float m_target_size;
+  float m_line_angle_total;
+  float m_line_angle;
 
   unsigned int m_radius{ 0U };
   vec2u m_center{ 0U, 0U };
