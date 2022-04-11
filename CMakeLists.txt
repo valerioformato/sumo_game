@@ -23,6 +23,16 @@ if(NOT ftxui_POPULATED)
   add_subdirectory(${ftxui_SOURCE_DIR} ${ftxui_BINARY_DIR} EXCLUDE_FROM_ALL)
 endif()
 
+if(EMSCRIPTEN)
+  set(ENABLE_TESTING CACHE INTERNAL "")
+  set(ENABLE_DEVELOPER_MODE
+      FALSE
+      CACHE BOOL "Enable 'developer mode'")
+  string(APPEND CMAKE_CXX_FLAGS " -s USE_PTHREADS")
+  string(APPEND CMAKE_EXE_LINKER_FLAGS " -s ASYNCIFY")
+  string(APPEND CMAKE_EXE_LINKER_FLAGS " -s PROXY_TO_PTHREAD")
+endif()
+
 # Note: by default ENABLE_DEVELOPER_MODE is True
 # This means that all analysis (sanitizers, static analysis)
 # is enabled and all warnings are treated as errors
@@ -86,6 +96,22 @@ endif()
 
 include(${_project_options_SOURCE_DIR}/src/DynamicProjectOptions.cmake)
 
+# Initialize project_options variable related to this project
+# This overwrites `project_options` and sets `project_warnings`
+# uncomment the options to enable them:
+if(EMSCRIPTEN)
+
+else()
+  dynamic_project_options(PCH_HEADERS <vector> <string>)
+  target_link_system_libraries(
+    termBreakerLib
+    PUBLIC
+    project_options
+    PUBLIC
+    project_warnings)
+  target_compile_features(project_options INTERFACE cxx_std_${CMAKE_CXX_STANDARD})
+endif()
+
 # defaulted_project_options sets recommended defaults and provides user and developer
 # modes and full GUI support for choosing options at configure time
 
@@ -119,6 +145,20 @@ add_subdirectory(configured_files)
 
 # Adding the src:
 add_subdirectory(src)
+
+if(EMSCRIPTEN)
+  target_link_options(intro PUBLIC "SHELL: -s TOTAL_MEMORY=67108864")
+
+  foreach(file "index.html" "run_webassembly.py")
+    configure_file(${file} ${file})
+  endforeach(file)
+
+  # Make the resources files available to the browser.
+  set_property(
+    TARGET intro
+    APPEND_STRING
+    PROPERTY LINK_FLAGS "--preload-file ../resources/")
+endif()
 
 # Adding the tests:
 option(ENABLE_TESTING "Enable the tests" ON)
