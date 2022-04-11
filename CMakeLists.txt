@@ -96,22 +96,6 @@ endif()
 
 include(${_project_options_SOURCE_DIR}/src/DynamicProjectOptions.cmake)
 
-# Initialize project_options variable related to this project
-# This overwrites `project_options` and sets `project_warnings`
-# uncomment the options to enable them:
-if(EMSCRIPTEN)
-
-else()
-  dynamic_project_options(PCH_HEADERS <vector> <string>)
-  target_link_system_libraries(
-    termBreakerLib
-    PUBLIC
-    project_options
-    PUBLIC
-    project_warnings)
-  target_compile_features(project_options INTERFACE cxx_std_${CMAKE_CXX_STANDARD})
-endif()
-
 # defaulted_project_options sets recommended defaults and provides user and developer
 # modes and full GUI support for choosing options at configure time
 
