@@ -23,23 +23,24 @@ public:
 
   void reset();
 
-  [[nodiscard]] StaticSprite sprite() const;
+  [[nodiscard]] StaticSprite sprite();
+
+  UniformRand<float> m_unif_dist{ 0.0F, 1.0F };
+  float m_line_angle_total;
+  float m_line_angle;
+  vec2u test_var{ 0U, 0U };
 
 private:
-  UniformRand<float> m_unif_dist{ 0.0F, 1.0F };
-
   bool m_has_terminated{ false };
   bool m_player_win{ true };
 
   float m_target_angle;
   float m_target_size;
-  float m_line_angle_total;
-  float m_line_angle;
 
   unsigned int m_radius{ 0U };
   vec2u m_center{ 0U, 0U };
 
-  vec2u pixelAtAngle(float angle, float scale = 1.0F) const;
+  vec2i pixelAtAngle(float angle, float scale = 1.0F) const;
   void drawTarget(std::span<ColorI32> buffer) const;
   static void drawLine(std::span<ColorI32> buffer, vec2i p0, vec2i p1);
 };
